@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:9.6.2
+    ports:
+      - "5440:5432"
+    volumes:
+      - ./docker-postgres-databases:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_DATABASES="performance-s0-t0", "performance-s0-t1", "performance-s1-t0", "performance-s1-t1"
+      - POSTGRES_USER=datahike
+      - POSTGRES_PASSWORD=clojure
+
+  datomic:
+    image: akiel/datomic-free:0.9.5703-2
+    ports:
+      - "4334-4336:4334-4336"
+    environment:
+      - ADMIN_PASSWORD=clojure
+      - DATOMIC_PASSWORD=clojure
+
+  benchmarks:
+    build: .
+    ports:
+      - "5000:5000"
+    network_mode: "host"
+    depends_on:
+      - postgres
+      - datomic
+    volumes:
+      - db:/tmp/output-db
+      - plots:/tmp/plots
+      - errors:/tmp/datahike-benchmark-errors
+      - signals:/tmp/signals
+
+  results:
+    build: ./result-presentation
+    ports:
+      - "4000:4000"
+    depends_on:
+      - benchmarks
+    volumes:
+      - db:/tmp/output-db
+      - presentation:/tmp/presentation
+      - signals:/tmp/signals
+
+volumes:
+  db:
+    external:
+      name: dh-benchmark-db
+  plots:
+    external:
+      name: dh-benchmark-plots
+  errors:
+    external:
+      name: dh-benchmark-errors
+  presentation:
+    external:
+      name: dh-benchmark-presentation
+  signals:
+    external:
+      name: dh-benchmark-signals

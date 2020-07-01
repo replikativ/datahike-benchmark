@@ -1,0 +1,20 @@
+
+# IDE
+*.iml
+.idea
+lsp
+
+# repl
+.nrepl-port
+.lein-repl-history
+
+# build
+target
+
+
+# output
+*.png
+*.csv
+*.log
+plots
+data
