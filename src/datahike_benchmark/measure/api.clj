@@ -26,16 +26,10 @@
    :sd (u/sd samples)
    :median (u/median samples)})
 
-(defn time-error [^Throwable error iteration]
-  (ex-info (str (.getMessage error) " in iteration: " iteration)
-           {:original-error error
-            :iteration iteration}))
-
-(defn space-error [^Throwable error iteration]
-  (ex-info (str (.getMessage error) " in iteration: " iteration)
-           {:original-error error
-            :iteration iteration}))
-
+(defn error [^Throwable error resource iteration]
+  (ex-info (.getMessage error)
+           {:iteration iteration
+            :resource resource}))
 
 ;; Measure time using clojure.core/time
 
@@ -65,8 +59,8 @@
                                 [res t] (get-time-with-res (fn [] (fn-to-measure args)))]
                             (tear-down-fn args res)
                             t)
-                          (catch Exception e (throw (time-error e i)))
-                          (catch AssertionError e (throw (time-error e i))))))]
+                          (catch Exception e (throw (error e i :time)))
+                          (catch AssertionError e (throw (error e i :time))))))]
     (return-map times)))
 
 
@@ -102,7 +96,7 @@
 
 
 (defmethod measure [:space :java]
-  [_ _ options iterations function lib f-args]
+  [_ _ options iterations function lib f-args]              ;; TODO: options hier destructuren
   (let [{:keys [time-step]} options  ;; in ms
         setup-fn (f/get-setup-fn function lib f-args)
         fn-to-measure (f/get-fn-to-measure function lib f-args)
@@ -121,8 +115,8 @@
                                space (- max-space initial-space)]
                            (tear-down-fn args res)
                            space)
-                         (catch Exception e (throw (space-error e i)))
-                         (catch AssertionError e (throw (space-error e i)))))))]
+                         (catch Exception e (throw (error e :space i)))
+                         (catch AssertionError e (throw (error e :space i)))))))]
       (reset! stop-thread true)
       (return-map s))))
 
@@ -136,8 +130,8 @@
                     (doall (dotimes [i iterations]
                              (try
                                (fn-to-measure args)
-                               (catch Exception e (throw (space-error e i)))
-                               (catch AssertionError e (throw (space-error e i)))))))
+                               (catch Exception e (throw (error e :space i)))
+                               (catch AssertionError e (throw (error e :space i)))))))
                   (catch Exception e (if (clojure.string/includes? (.getMessage e) "No stack counts found")
                                        (println "Warning:" (.getMessage e))
                                        (throw e))))
@@ -158,7 +152,7 @@
          one-time-tear-down-fn (f/get-one-time-tear-down-fn function lib f-args)
          args (one-time-setup-fn)
          data (profile-space space-step iterations fn-to-measure args)
-         relevant-data (filter #(map (fn [lib] clojure.string/includes? (first %) (name lib))
+         relevant-data (filter #(map (fn [lib] clojure.string/includes? (first %) (name lib)) ;; TODO: bbatsov, clojure styleguide, nicht mischen
                                      c/libs)
                                 data)
          sample-counts (remove nil?

@@ -1,8 +1,7 @@
 (ns datahike-benchmark.bench.util
   (:require [datahike-benchmark.config :as c]
             [clojure.pprint :refer [pprint]]
-            [clojure.string :as s]
-            [clojure.stacktrace :refer [print-stack-trace]])
+            [clojure.string :as s])
   (:import (java.util Random Collection ArrayList Collections)
            (clojure.lang RT)))
 
@@ -27,9 +26,9 @@
     (spit filename
           (with-out-str
             (pprint
-              {:cli-options  options
+              {:error        (Throwable->map error)
                :loop-context run-info
-               :error        (Throwable->map error)})))
+               :cli-options  options})))
     (println (str "Full error report saved in " filename))
     filename))
 
