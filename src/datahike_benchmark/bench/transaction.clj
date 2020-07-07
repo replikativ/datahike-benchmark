@@ -9,40 +9,53 @@
   "Returns observations"
   [configs measure-function resource options]
   (println "Measuring transaction function...")
-  (let [schema [(u/make-attr :name :db.type/string)]
-        [tx-seed db-seed] (repeatedly 2 (u/int-generator (:seed options)))
+  (let [{:keys [seed db-datom-count tx-datom-counts]} options
+        schema [(u/make-attr :name :db.type/string)]
+        [tx-seed db-seed] (repeatedly 2 (u/int-generator seed))
 
-        db-datom-counts (if (= :function-specific (:db-datom-count options))
+        db-datom-counts (if (= :function-specific db-datom-count)
                           (u/int-linspace 0 1000 11) ;; for 8192 memory exception
-                          (:db-datom-count options))
+                          db-datom-count)
 
-        tx-datom-counts (if (= :function-specific (:tx-datom-count options))
+        tx-datom-counts (if (= :function-specific tx-datom-counts)
                           (assoc (u/int-linspace 0 1000 11) 0 1)
-                          (:tx-datom-count options))
+                          tx-datom-counts)
 
-        res (doall (for [db-datom-count db-datom-counts
-                         tx-datom-count tx-datom-counts
-                         config configs
-                         :let [run-info {:backend        (:name config)
-                                         :schema-on-read (:schema-on-read config)
-                                         :temporal-index (:temporal-index config)
-                                         :datoms tx-datom-count
-                                         :db-size db-datom-count}]]
+        res (doall (for [n-db-datoms db-datom-counts
+                         n-tx-datoms tx-datom-counts
+                         {:keys [lib backend schema-on-read temporal-index] :as config} configs
+                         :let [context {:datoms n-tx-datoms
+                                        :db-size n-db-datoms
+                                        :backend         backend
+                                        :schema-on-read schema-on-read
+                                        :temporal-index temporal-index}]]
                      (try
-                       (println " TRANSACT: Number of datoms in db:" db-datom-count)
-                       (println "           Number of datoms per transaction:" tx-datom-count)
+                       (println " TRANSACT: Number of datoms in db:" n-db-datoms)
+                       (println "           Number of datoms per transaction:" n-tx-datoms)
                        (println "           Config:" config)
-                       (println "           Seed:" (:seed options))
-                       (let [db-datom-gen (u/tx-generator :name :db.type/string db-datom-count db-seed)
-                             tx-datom-gen (u/tx-generator :name :db.type/string tx-datom-count tx-seed)
-                             fn-args {:config config :schema schema :db-datom-gen db-datom-gen :tx-datom-gen tx-datom-gen}
-                             t (measure-function (:lib config) fn-args)]
-                         (println "  Mean:" (:mean t) (c/unit resource))
-                         (println "  Median:" (:median t) (c/unit resource))
-                         (println "  Standard deviation:" (:sd t) (c/unit resource))
-                         (merge run-info (select-keys t [:mean :median :sd])))
-                       (catch Exception e (u/error-handling e options run-info))
-                       (catch AssertionError e (u/error-handling e options run-info)))))]
+                       (println "           Seed:" seed)
+
+                       (let [db-datom-gen (u/tx-generator :name :db.type/string n-db-datoms db-seed)
+                             tx-datom-gen (u/tx-generator :name :db.type/string n-tx-datoms tx-seed)
+                             fn-args {:config config
+                                      :schema schema
+                                      :db-datom-gen db-datom-gen
+                                      :tx-datom-gen tx-datom-gen}
+
+                             {:keys [median mean sd]} (measure-function lib fn-args)
+                             unit (c/unit resource)]
+
+                         (println "  Mean:" mean unit)
+                         (println "  Median:" median unit)
+                         (println "  Standard deviation:" sd unit)
+
+                         (merge context
+                                {:mean mean
+                                 :median median
+                                 :sd sd}))
+
+                       (catch Exception e (u/error-handling e options context))
+                       (catch AssertionError e (u/error-handling e options context)))))]
     (remove empty? res)))
 
 
@@ -50,28 +63,4 @@
   (println (str "Getting transaction " (name resource)) "...")
   (let [iter (:transaction (:iterations options))
         f (partial m/measure resource method options iter :transaction)]
-    (run-combinations (:databases options)                  ;;(concat c/hitchhiker-configs c/db-configurations)
-                      f resource options)))
-
-#_(let [options {:not-write-to-db false,
-               :time-only false,
-               :space-only false,
-               :space-step 5,
-               :not-save-plots false,
-               :use-criterium false,
-               :crash-on-error true,
-               :not-save-data false,
-               :function "transaction",
-               :seed 1092967482,
-               :time-step 5,
-               :use-java false,
-               :iterations {:connection 50, :transaction 10, :query 10}}
-
-      f (partial m/measure :time :core.time options 1 :transaction)]
-  (doall (run-combinations [{:lib            :datahike
-                             :name           "In-Memory (HHT)"
-                             :uri            "datahike:mem://performance-hht"
-                             :schema-on-read false :temporal-index false
-                             :store          {:backend :mem :path "performance-hht"} :index :datahike.index/hitchhiker-tree}]
-                           ;;(concat c/hitchhiker-configs c/db-configurations)
-                           f :time options)))
+    (run-combinations (:databases options) f resource options)))

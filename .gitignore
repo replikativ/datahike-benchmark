@@ -18,3 +18,4 @@ target
 *.log
 plots
 data
+doc

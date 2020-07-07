@@ -9,31 +9,41 @@
 (defn run-combinations
   "Returns observations"
   [configs measure-function resource options]
-  (let [schema [(u/make-attr :name :db.type/string)]
+  (let [{:keys [seed db-datom-count]} options
+        schema [(u/make-attr :name :db.type/string)]
 
-        datom-count (if (= :function-specific (:db-datom-count options))
+        datom-counts (if (= :function-specific db-datom-count)
                       (u/int-linspace 0 5000 21) ;; for 8192 memory exception
-                      (:db-datom-count options))
+                      db-datom-count)
 
-        res (doall (for [db-datom-count datom-count
-                         config configs
-                         :let [tx (u/create-n-str-transactions :name db-datom-count (:seed options))
-                               run-info {:backend        (:name config)
-                                         :schema-on-read (:schema-on-read config)
-                                         :temporal-index (:temporal-index config)
+        res (doall (for [db-datom-count datom-counts
+                         {:keys [lib backend schema-on-read temporal-index] :as config} configs
+                         :let [tx (u/create-n-str-transactions :name db-datom-count seed)
+                               context {:backend        backend
+                                         :schema-on-read schema-on-read
+                                         :temporal-index temporal-index
                                          :datoms         db-datom-count}]]
                      (try
                        (println " CONNECT - Number of datoms in db:" db-datom-count)
                        (println "           Config:" config)
-                       (println "           Seed:" (:seed options))
-                       (db/prepare-db (:lib config) config schema tx)
-                       (let [t (measure-function (:lib config) config)]
-                         (println "  Mean:" (:mean t) (c/unit resource))
-                         (println "  Median:" (:median t) (c/unit resource))
-                         (println "  Standard deviation:" (:sd t) (c/unit resource))
-                         (merge run-info (select-keys t [:mean :median :sd])))
-                       (catch Exception e (u/error-handling e options run-info))
-                       (catch AssertionError e (u/error-handling e options run-info)))))]
+                       (println "           Seed:" seed)
+
+                       (db/prepare-db lib config schema tx)
+
+                       (let [{:keys [mean median sd]} (measure-function lib config)
+                             unit (c/unit resource)]
+
+                         (println "  Mean:" mean unit)
+                         (println "  Median:" median unit)
+                         (println "  Standard deviation:" sd unit)
+
+                         (merge context
+                                {:mean mean
+                                 :median median
+                                 :sd sd}))
+
+                       (catch Exception e (u/error-handling e options context))
+                       (catch AssertionError e (u/error-handling e options context)))))]
     (remove empty? res)))
 
 

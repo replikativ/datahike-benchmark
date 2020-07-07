@@ -8,11 +8,11 @@
 ;; Error handling
 
 (defn print-short-error-report [error]
-  (let [e (Throwable->map error)
-        first-items (take 5 (:trace e))
+  (let [{:keys [trace cause]} (Throwable->map error)
+        [first-items rest-items] (split-at 5 trace)
         rest-important-items (filter #(s/starts-with? (first %) "datahike_benchmark")
-                                    (drop 5 (:trace e)))]
-    (println "  Shortened stacktrace for:  " (:cause e))
+                                     rest-items)]
+    (println "  Shortened stacktrace for:  " cause)
     (println "   Start:")
     (dorun (for [item first-items]
              (println "    " item)))
@@ -21,22 +21,22 @@
       (dorun (for [item rest-important-items]
                (println "    " item))))))
 
-(defn save-error-report [error options run-info]
+(defn save-error-report [error cli-options context]
   (let [filename (c/error-filename)]
     (spit filename
           (with-out-str
             (pprint
               {:error        (Throwable->map error)
-               :loop-context run-info
-               :cli-options  options})))
+               :loop-context context
+               :cli-options  cli-options})))
     (println (str "Full error report saved in " filename))
     filename))
 
 (defn error-handling
-  ([error options] (error-handling error options nil))
-  ([error options run-info]
-   (save-error-report error options run-info)
-   (if (:crash-on-error options)
+  ([error cli-options] (error-handling error cli-options nil))
+  ([error cli-options context]
+   (save-error-report error cli-options context)
+   (if (:crash-on-error cli-options)
      (throw error)
      (print-short-error-report error))))
 

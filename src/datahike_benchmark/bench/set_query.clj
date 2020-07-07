@@ -169,50 +169,64 @@
           (concat int-cols [first-str-col] str-cols))))
 
 
-(defn run-query-combinations [uri measure-function resource db options db-info]
-  (remove empty? (doall (for [query set-queries
-                            :let [run-info (merge db-info
-                                                  {:category (:category query)
-                                                   :specific (:specific query)})]]
+(defn run-query-combinations [lib measure-function resource db options db-context]
+  (remove empty? (doall (for [{:keys [category specific query]} set-queries
+                            :let [context (merge db-context
+                                                  {:category category
+                                                   :specific specific})]]
                         (try
-                          (println "             Query:" (:category query) "(" (:specific query) ")")
-                          (let [fn-args {:db db :query-gen #(:query query)}
-                                t (measure-function (:lib uri) fn-args)]
-                            (println "  Mean:" (:mean t) (c/unit resource))
-                            (println "  Median:" (:median t) (c/unit resource))
-                            (println "  Standard deviation:" (:sd t) (c/unit resource))
-                            (merge run-info (select-keys t [:mean :median :sd])))
-                          (catch Exception e (u/error-handling e options run-info))
-                          (catch AssertionError e (u/error-handling e options run-info)))))))
+                          (println "             Query:" category "(" specific ")")
+
+                          (let [fn-args {:db db
+                                         :query-gen #(identity query)}
+                                {:keys [mean median sd]} (measure-function lib fn-args)
+                                unit (c/unit resource)]
+
+                            (println "  Mean:" mean unit)
+                            (println "  Median:" median unit)
+                            (println "  Standard deviation:" sd unit)
+
+                            (merge context
+                                   {:mean
+                                    :median
+                                    :sd sd}))
+
+                          (catch Exception e (u/error-handling e options context))
+                          (catch AssertionError e (u/error-handling e options context)))))))
 
 
 (defn run-combinations
   "Returns observations"
   [configs measure-function resource options]
-  (let [set-query-schema (make-set-query-schema)
+  (let [{:keys [entity-count]} options
+        set-query-schema (make-set-query-schema)
 
-        entity-count (if (= :function-specific (:entity-count options))
+        entity-counts (if (= :function-specific entity-count)
                        [1000]   ;; use at least 1 Mio ;; 1000 plausible
-                       (:entity-count options))
+                       entity-count)
 
-        res (doall (for [n-entities entity-count
-                         config configs
-                         :let [db-info {:backend (:name config)
-                                        :schema-on-read (:schema-on-read config)
-                                        :temporal-index (:temporal-index config)
+        res (doall (for [n-entities entity-counts
+                         {:keys [lib backend schema-on-read temporal-index] :as config} configs
+                         :let [db-context {:backend backend
+                                        :schema-on-read schema-on-read
+                                        :temporal-index temporal-index
                                         :entities n-entities}]]
                      (try
                        (println " SET_QUERY - Number of entities in database:" n-entities)
                        (println "             Config:" config)
-                       (let [schema (if (:schema-on-read config) [] set-query-schema)
+
+                       (let [schema (if schema-on-read [] set-query-schema)
                              entities (mapv #(make-set-query-entity %) (range n-entities))
-                             conn (db/prepare-db-and-connect (:lib config) config schema entities)
-                             db (db/db (:lib config) conn)
-                             query-measurements (run-query-combinations config measure-function resource db options db-info)]
-                         (db/release (:lib config) conn)
-                         (map #(merge db-info %) query-measurements))
-                       (catch Exception e (u/error-handling e options db-info))
-                       (catch AssertionError e (u/error-handling e options db-info)))))]
+                             conn (db/prepare-db-and-connect lib config schema entities)
+                             db (db/db lib conn)
+                             measurements (run-query-combinations lib measure-function resource db options db-context)]
+
+                         (db/release lib conn)
+
+                         measurements)
+
+                       (catch Exception e (u/error-handling e options db-context))
+                       (catch AssertionError e (u/error-handling e options db-context)))))]
     (remove empty? (apply concat res))))
 
 

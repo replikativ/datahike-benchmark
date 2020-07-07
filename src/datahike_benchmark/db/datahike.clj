@@ -6,7 +6,7 @@
             [datahike-leveldb.core]))
 
 
-(defmethod db/connect :datahike [_ uri] (d/connect uri))
+(defmethod db/connect :datahike [_ config] (d/connect config))
 
 (defmethod db/transact :datahike [_ conn tx] (d/transact conn tx))
 
@@ -16,6 +16,6 @@
 
 (defmethod db/q :datahike [_ query db] (d/q query db))
 
-(defmethod db/init :datahike [_ uri args]
-  (d/delete-database uri)
-  (apply d/create-database uri args))
+(defmethod db/init :datahike [_ config args]
+  (d/delete-database config)
+  (apply d/create-database config args))

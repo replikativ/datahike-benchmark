@@ -12,11 +12,11 @@
 
 (def memory (atom {}))
 
-(defn create [uri]
-  (swap! memory assoc uri (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
+(defn create [config]
+  (swap! memory assoc config (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
 
-(defn delete [uri]
-  (swap! memory dissoc uri))
+(defn delete [config]
+  (swap! memory dissoc config))
 
 (defn insert-many [tree values]
   (async/<??
@@ -39,8 +39,9 @@
 
 ;; Multimethods
 
-(defmethod db/connect :hitchhiker [_ uri]
-  {:tree (get @memory uri) :config uri})
+(defmethod db/connect :hitchhiker [_ config]
+  {:tree (get @memory config)
+   :config config})
 
 (defmethod db/release :hitchhiker [_ _] nil)
 
@@ -48,9 +49,9 @@
   (let [new-tree (insert-many (:tree conn) (entities->nodes conn tx))]
     (assoc conn :tree new-tree)))
 
-(defmethod db/init :hitchhiker [_ uri _]
-  (delete uri)
-  (create uri))
+(defmethod db/init :hitchhiker [_ config _]
+  (delete config)
+  (create config))
 
 
 
