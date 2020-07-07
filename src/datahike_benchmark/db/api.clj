@@ -11,19 +11,25 @@
 
 ;; Functions from interface
 
-(defn connect [lib uri] (db/connect lib uri))
-(defn transact [lib conn tx] (db/transact lib conn tx))
-(defn release [lib conn] (db/release lib conn))
-(defn db [lib conn] (db/db lib conn))
-(defn q [lib query db] (db/q lib query db))
-(defn init [lib uri args] (db/init lib uri args))
+(def ^{:arglists '([lib config])} connect db/connect)
+
+(def ^{:arglists '([lib conn])} transact db/transact)
+
+(def ^{:arglists '([lib conn])} release db/release)
+
+(def ^{:arglists '([lib conn])} db db/db)
+
+(def ^{:arglists '([lib query db])} q db/q)
+
+(def ^{:arglists '([lib config args])
+       :doc "Creates a new empty database"} init db/init)
 
 
 ;; Others
 
-(defn init-and-connect [lib uri & args]
-  (init lib uri args)
-  (connect lib uri))
+(defn init-and-connect [lib config & args]
+  (init lib config args)
+  (connect lib config))
 
 (defn use-uri [config]
   (or (not (= :datahike (:lib config)))
