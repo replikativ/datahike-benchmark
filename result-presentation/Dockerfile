@@ -15,5 +15,7 @@ CMD while ! test -e "/tmp/signals/benchmarks-finished"; \
     echo "Starting report creation at $(date)"; \
     lein run "/tmp/presentation/" \
     && rm "/tmp/signals/benchmarks-finished" \
-    && echo "Signal file deleted!" \
+    && echo "Benchmarking signal file deleted!" \
+    && touch "/tmp/signals/report-finished" \
+    && echo "Signal for finished report creation sent"; \
     echo "Finished report creation at $(date)"

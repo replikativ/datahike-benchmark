@@ -13,16 +13,16 @@
         schema [(u/make-attr :name :db.type/string)]
 
         datom-counts (if (= :function-specific db-datom-count)
-                      (u/int-linspace 0 5000 21) ;; for 8192 memory exception
-                      db-datom-count)
+                       (u/int-linspace 0 5000 21)           ;; for 8192 memory exception
+                       db-datom-count)
 
         res (doall (for [db-datom-count datom-counts
                          {:keys [lib backend schema-on-read temporal-index] :as config} configs
                          :let [tx (u/create-n-str-transactions :name db-datom-count seed)
                                context {:backend        backend
-                                         :schema-on-read schema-on-read
-                                         :temporal-index temporal-index
-                                         :datoms         db-datom-count}]]
+                                        :schema-on-read schema-on-read
+                                        :temporal-index temporal-index
+                                        :datoms         db-datom-count}]]
                      (try
                        (println " CONNECT - Number of datoms in db:" db-datom-count)
                        (println "           Config:" config)
@@ -38,9 +38,9 @@
                          (println "  Standard deviation:" sd unit)
 
                          (merge context
-                                {:mean mean
+                                {:mean   mean
                                  :median median
-                                 :sd sd}))
+                                 :sd     sd}))
 
                        (catch Exception e (u/error-handling e options context))
                        (catch AssertionError e (u/error-handling e options context)))))]

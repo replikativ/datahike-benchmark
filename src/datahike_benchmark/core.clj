@@ -16,8 +16,8 @@
 (def implemented-libs (set (map (comp name :lib) c/db-configurations)))
 (def implemented-dbs (set (map (comp name :db) c/db-configurations)))
 (def implemented-functions #{"connection" "transaction" "random-query"
-                            ;;"set-query"
-                            })
+                             ;;"set-query"
+                             })
 
 ;; Documentation unclear about versions
 ;; :multi not recognized and :update-fn not working even in version 1.0.194 of tools.cli
@@ -33,9 +33,13 @@
    ["-u" "--save-to-db URI" "Save results to datahike database with given URI instead of file" :default nil]
 
    ["-n" "--data-dir DIR" "Data directory" :default c/data-dir
-    :validate [#(or (not (.exists (io/file %))) (.isDirectory (io/file %))) "Path must be a directory if it already exists. Given: "]]
+    :validate [#(or (not (.exists (io/file %)))
+                    (.isDirectory (io/file %)))
+               "Path must be a directory if it already exists. Given: "]]
    ["-p" "--plot-dir DIR" "Plot directory" :default c/plot-dir
-    :validate [#(or (not (.exists (io/file %))) (.isDirectory (io/file %))) "Path must be a directory if it already exists"]]
+    :validate [#(or (not (.exists (io/file %)))
+                    (.isDirectory (io/file %)))
+               "Path must be a directory if it already exists"]]
 
    ["-s" "--seed SEED" "Initial seed for data creation"
     :default (rand-int c/max-int)
@@ -77,7 +81,7 @@
 
    ["-i" "--iterations ITERATIONS"
     "Number of iterations as string of space-separated integers of 1. connection 2. transaction and 3. query measurements (ignored for criterium)"
-    :default {:connection 50 :transaction 10 :query 10}       ;; transaction 50 iterations -> over 19 hours
+    :default {:connection 50 :transaction 10 :query 10}     ; transaction 50 iterations -> over 19 hours
     :parse-fn #(zipmap [:connection :transaction :query]
                        (map (fn [x] (Integer/parseInt x)) (split (trim %) #" ")))
     :validate [#(every? nat-int? (vals %)) "Must consist of non-negative integers"]]
@@ -103,16 +107,16 @@
 
 (defn save [measurements subject resource options]
   (when (not (:not-save-data options))
-      (print (str " Save " (name subject) " data..."))
-      (if (nil? (:save-to-db options))
-        (do
-          (when-not (.exists (io/file (:data-dir options)))
+    (print (str " Save " (name subject) " data..."))
+    (if (nil? (:save-to-db options))
+      (do
+        (when-not (.exists (io/file (:data-dir options)))
+          (.mkdir (io/file (:data-dir options))))
+        (u/write-as-csv measurements (c/data-filename subject resource)))
+      (do (when-not (.exists (io/file (:data-dir options)))
             (.mkdir (io/file (:data-dir options))))
-          (u/write-as-csv measurements (c/data-filename subject resource)))
-        (do (when-not (.exists (io/file (:data-dir options)))
-              (.mkdir (io/file (:data-dir options))))
           (u/write-to-db measurements subject resource (:save-to-db options))))
-      (print " saved\n"))
+    (print " saved\n"))
 
   (when (not (:not-save-plots options))
     (print (str " Save " (name subject) " plots..."))
@@ -160,5 +164,4 @@
                      (when (not (:time-only options))
                        (-> (b/bench function :space (:space-method ext-options) ext-options)
                            (save function :space options))))))))))
-  (println "Benchmarking has finished successfully")
-  (System/exit 0))
+  (println "Benchmarking has finished successfully"))

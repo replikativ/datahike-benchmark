@@ -21,22 +21,22 @@
       (dorun (for [item rest-important-items]
                (println "    " item))))))
 
-(defn save-error-report [error cli-options context]
+(defn save-error-report [error options context]
   (let [filename (c/error-filename)]
     (spit filename
           (with-out-str
             (pprint
               {:error        (Throwable->map error)
                :loop-context context
-               :cli-options  cli-options})))
+               :cli-options  options})))
     (println (str "Full error report saved in " filename))
     filename))
 
 (defn error-handling
-  ([error cli-options] (error-handling error cli-options nil))
-  ([error cli-options context]
-   (save-error-report error cli-options context)
-   (if (:crash-on-error cli-options)
+  ([error options] (error-handling error options nil))
+  ([error options context]
+   (save-error-report error options context)
+   (if (:crash-on-error options)
      (throw error)
      (print-short-error-report error))))
 
@@ -59,7 +59,7 @@
          generator (case type
                      :db.type/long #(long (.nextInt r))
                      :db.type/string #(format "%15d" (.nextInt r))
-                     :default (throw (Exception. (str "Generator implemented for type: " type))))]
+                     (throw (Exception. (str "Generator implemented for type: " type))))]
      generator)))
 
 (defn int-generator [seed]
@@ -76,7 +76,7 @@
     #(hash-map attribute-ident (generator))))
 
 (defn tx-generator [attribute-ident type n seed]
-  (if (> n 0)
+  (if (pos? n)
     (let [generate-datom (datom-generator attribute-ident type seed)]
       #(vec (repeatedly n generate-datom)))
     #(vector)))
@@ -89,7 +89,9 @@
 ;; Point series generation
 
 (defn linspace [start end point-count]
-  (vec (range start (inc end) (/ (- end start) (dec point-count)))))
+  (vec (range start
+              (inc end)
+              (/ (- end start) (dec point-count)))))
 
 (defn int-linspace [start end point-count]
   (mapv int (linspace start end point-count)))

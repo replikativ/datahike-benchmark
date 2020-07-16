@@ -42,20 +42,31 @@
 
 ;; Connection
 
-(defmethod get-setup-fn      :connection [_ _ _]         (fn []        nil))
-(defmethod get-fn-to-measure :connection [_ lib fn-args] (fn [_]      (db/connect lib (if (use-uri fn-args)
-                                                                                        (:uri fn-args)
-                                                                                        (:store fn-args)))))
-(defmethod get-tear-down-fn  :connection [_ lib _]       (fn [_ conn] (db/release lib conn)))
+(defmethod get-setup-fn :connection [_ _ _]
+  (fn [] nil))
+
+(defmethod get-fn-to-measure :connection [_ lib fn-args]
+  (fn [_] (db/connect lib (if (use-uri fn-args)
+                            (:uri fn-args)
+                            (:store fn-args)))))
+
+(defmethod get-tear-down-fn :connection [_ lib _]
+  (fn [_ conn]
+    (db/release lib conn)))
 
 
 ;; Connection with release
 
-(defmethod get-one-time-setup-fn     :connection-release [_ _ _]         (fn []  nil))
-(defmethod get-fn-to-measure         :connection-release [_ lib fn-args] (fn [_] (db/release lib (db/connect lib (if (use-uri fn-args )
-                                                                                                                   (:uri fn-args)
-                                                                                                                   (:store fn-args))))))
-(defmethod get-one-time-tear-down-fn :connection-release [_ _ _]         (fn [_] nil))
+(defmethod get-one-time-setup-fn :connection-release [_ _ _]
+  (fn [] nil))
+
+(defmethod get-fn-to-measure :connection-release [_ lib fn-args]
+  (fn [_] (db/release lib (db/connect lib (if (use-uri fn-args)
+                                            (:uri fn-args)
+                                            (:store fn-args))))))
+
+(defmethod get-one-time-tear-down-fn :connection-release [_ _ _]
+  (fn [_] nil))
 
 
 ;; Transaction
@@ -66,17 +77,35 @@
         tx-data (tx-datom-gen)]
     [conn tx-data]))
 
-(defmethod get-setup-fn              :transaction [_ lib fn-args] (fn [] (prepare-transaction-measurements lib fn-args)));; only needed here so db does not fill up more with each iteration
-(defmethod get-one-time-setup-fn     :transaction [_ lib fn-args] (fn [] (prepare-transaction-measurements lib fn-args)))
-(defmethod get-fn-to-measure         :transaction [_ lib _]       (fn [[conn tx-data]] (db/transact lib conn tx-data)))
-(defmethod get-tear-down-fn          :transaction [_ lib _]       (fn [[conn _] _] (db/release lib conn)))
-(defmethod get-one-time-tear-down-fn :transaction [_ lib _]       (fn [[conn _]]   (db/release lib conn)))
+(defmethod get-setup-fn :transaction [_ lib fn-args]
+  (fn [] (prepare-transaction-measurements lib fn-args))) ; only needed here so db does not fill up more with each iteration
+
+(defmethod get-one-time-setup-fn :transaction [_ lib fn-args]
+  (fn [] (prepare-transaction-measurements lib fn-args)))
+
+(defmethod get-fn-to-measure :transaction [_ lib _]
+  (fn [[conn tx-data]] (db/transact lib conn tx-data)))
+
+(defmethod get-tear-down-fn :transaction [_ lib _]
+  (fn [[conn _] _] (db/release lib conn)))
+
+(defmethod get-one-time-tear-down-fn :transaction [_ lib _]
+  (fn [[conn _]] (db/release lib conn)))
 
 
 ;; Query
 
-(defmethod get-setup-fn              :query [_ _ fn-args]   (fn [] ((:query-gen fn-args))))
-(defmethod get-one-time-setup-fn     :query [_ _ fn-args]   (fn [] ((:query-gen fn-args))))
-(defmethod get-fn-to-measure         :query [_ lib fn-args] (fn [query] (db/q lib query (:db fn-args))))
-(defmethod get-tear-down-fn          :query [_ _ _]         (fn [_ _]   nil))
-(defmethod get-one-time-tear-down-fn :query [_ _ _]         (fn [_]     nil))
+(defmethod get-setup-fn :query [_ _ fn-args]
+  (fn [] ((:query-gen fn-args))))
+
+(defmethod get-one-time-setup-fn :query [_ _ fn-args]
+  (fn [] ((:query-gen fn-args))))
+
+(defmethod get-fn-to-measure :query [_ lib fn-args]
+  (fn [query] (db/q lib query (:db fn-args))))
+
+(defmethod get-tear-down-fn :query [_ _ _]
+  (fn [_ _] nil))
+
+(defmethod get-one-time-tear-down-fn :query [_ _ _]
+  (fn [_] nil))

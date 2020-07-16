@@ -15,9 +15,9 @@ COPY    . /usr/src/app
 RUN     mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
 
 CMD rm "/tmp/signals/benchmarks-finished" \
-    && echo "Signal file deleted!"; \
+    && echo "Signal file for finished benchmark creation deleted!"; \
     echo "Starting benchmarking at $(date)"; \
-    java -jar app-standalone.jar -u "datahike:file:///tmp/output-db" -t -p "/tmp/plots" --use-java \
+    java -jar app-standalone.jar -u "datahike:file:///tmp/output-db" -p "/tmp/plots" \
     && touch "/tmp/signals/benchmarks-finished" \
-    && echo "Signal sent" \
-    && echo "Finished benchmarking at $(date)"; \
+    && echo "Signal for finished benchmark creation sent" \
+    && echo "Finished benchmarking at $(date)";

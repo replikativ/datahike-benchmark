@@ -37,8 +37,8 @@
       (map #(hash-map
               :category "Q1"
               :specific (str %)
-              :query    (update count-query :where conj
-                                (conj '[?e] (keyword (str "K" %)) 2)))
+              :query (update count-query :where conj
+                             (conj '[?e] (keyword (str "K" %)) 2)))
            [500000 250000 100000 40000 10000 1000 100 25 10 5 4 2])
 
       [{:category "Q1"
@@ -48,50 +48,50 @@
       (map #(hash-map
               :category "Q2a"
               :specific (str %)
-              :query    (update count-query :where conj
-                                '[?e :K2 2]
-                                (conj '[?e] (keyword (str "K" %)) 3)))
+              :query (update count-query :where conj
+                             '[?e :K2 2]
+                             (conj '[?e] (keyword (str "K" %)) 3)))
            [500000 250000 100000 40000 10000 1000 100 25 10 5 4])
 
 
       (map #(hash-map
               :category "Q2b"
               :specific (str %)
-              :query    (update count-query :where conj
-                                '[?e :K2 2]
-                                (conj '() (conj '[?e] (keyword (str "K" %)) 3) 'not)))
+              :query (update count-query :where conj
+                             '[?e :K2 2]
+                             (conj '() (conj '[?e] (keyword (str "K" %)) 3) 'not)))
            [500000 250000 100000 40000 10000 1000 100 25 10 5 4])
 
 
       (map #(hash-map
               :category "Q3a"
               :specific (str %)
-              :query    (update sum-query :where conj
-                                '[?e :K1000 ?s]
-                                '[?e :KSEQ ?v]
-                                '[(< 400000 ?v)]
-                                '[(< ?v 500000)] ;; [(< 400000 ?v 500000)] not possible in datomic
-                                (conj '[?e] (keyword (str "K" %)) 3)))
+              :query (update sum-query :where conj
+                             '[?e :K1000 ?s]
+                             '[?e :KSEQ ?v]
+                             '[(< 400000 ?v)]
+                             '[(< ?v 500000)]               ;; [(< 400000 ?v 500000)] not possible in datomic
+                             (conj '[?e] (keyword (str "K" %)) 3)))
            [500000 250000 100000 40000 10000 1000 100 25 10 5 4])
 
       (map #(hash-map
               :category "Q3b"
               :specific (str %)
-              :query    (update sum-query :where conj
-                                '[?e :K1000 ?s]
-                                '[?e :KSEQ ?v]
-                                '(or
-                                   (and [(< 400000 ?v)]
-                                        [(< ?v 410000)])
-                                   (and [(< 420000 ?v)]
-                                        [(< ?v 430000)])
-                                   (and [(< 440000 ?v)]
-                                        [(< ?v 450000)])
-                                   (and [(< 460000 ?v)]
-                                        [(< ?v 470000)])
-                                   (and [(< 480000 ?v)]
-                                        [(< ?v 500000)]))
-                                (conj '[?e] (keyword (str "K" %)) 3)))
+              :query (update sum-query :where conj
+                             '[?e :K1000 ?s]
+                             '[?e :KSEQ ?v]
+                             '(or
+                                (and [(< 400000 ?v)]
+                                     [(< ?v 410000)])
+                                (and [(< 420000 ?v)]
+                                     [(< ?v 430000)])
+                                (and [(< 440000 ?v)]
+                                     [(< ?v 450000)])
+                                (and [(< 460000 ?v)]
+                                     [(< ?v 470000)])
+                                (and [(< 480000 ?v)]
+                                     [(< ?v 500000)]))
+                             (conj '[?e] (keyword (str "K" %)) 3)))
            [500000 250000 100000 40000 10000 1000 100 25 10 5 4])
 
 
@@ -124,24 +124,24 @@
       (map #(hash-map
               :category "Q6a"
               :specific (str %)
-              :query    (update count-query :where conj
-                                (conj '[?e] (keyword (str "K" %)) 49)
-                                '[?e :K250000 ?v1]
-                                '[?e2 :K500000 ?v2]
-                                '[(= ?v1 ?v2)]))
+              :query (update count-query :where conj
+                             (conj '[?e] (keyword (str "K" %)) 49)
+                             '[?e :K250000 ?v1]
+                             '[?e2 :K500000 ?v2]
+                             '[(= ?v1 ?v2)]))
            [100000 40000 10000 1000 100])
 
       (map #(hash-map
               :category "Q6b"
               :specific (str %)
-              :query    (update res2-query :where conj
-                                (conj '[?e] (keyword (str "K" %)) 99)
-                                '[?e :KSEQ ?res1]
-                                '[?e :K250000 ?v1]
-                                '[?e2 :K25 19]
-                                '[?e2 :KSEQ ?res2]
-                                '[?e2 :K500000 ?v2]
-                                '[(= ?v1 ?v2)]))
+              :query (update res2-query :where conj
+                             (conj '[?e] (keyword (str "K" %)) 99)
+                             '[?e :KSEQ ?res1]
+                             '[?e :K250000 ?v1]
+                             '[?e2 :K25 19]
+                             '[?e2 :KSEQ ?res2]
+                             '[?e2 :K500000 ?v2]
+                             '[(= ?v1 ?v2)]))
            [40000 10000 1000 100]))))
 
 
@@ -171,28 +171,28 @@
 
 (defn run-query-combinations [lib measure-function resource db options db-context]
   (remove empty? (doall (for [{:keys [category specific query]} set-queries
-                            :let [context (merge db-context
-                                                  {:category category
-                                                   :specific specific})]]
-                        (try
-                          (println "             Query:" category "(" specific ")")
+                              :let [context (merge db-context
+                                                   {:category category
+                                                    :specific specific})]]
+                          (try
+                            (println "             Query:" category "(" specific ")")
 
-                          (let [fn-args {:db db
-                                         :query-gen #(identity query)}
-                                {:keys [mean median sd]} (measure-function lib fn-args)
-                                unit (c/unit resource)]
+                            (let [fn-args {:db        db
+                                           :query-gen #(identity query)}
+                                  {:keys [mean median sd]} (measure-function lib fn-args)
+                                  unit (c/unit resource)]
 
-                            (println "  Mean:" mean unit)
-                            (println "  Median:" median unit)
-                            (println "  Standard deviation:" sd unit)
+                              (println "  Mean:" mean unit)
+                              (println "  Median:" median unit)
+                              (println "  Standard deviation:" sd unit)
 
-                            (merge context
-                                   {:mean
-                                    :median
-                                    :sd sd}))
+                              (merge context
+                                     {:mean
+                                          :median
+                                      :sd sd}))
 
-                          (catch Exception e (u/error-handling e options context))
-                          (catch AssertionError e (u/error-handling e options context)))))))
+                            (catch Exception e (u/error-handling e options context))
+                            (catch AssertionError e (u/error-handling e options context)))))))
 
 
 (defn run-combinations
@@ -202,21 +202,22 @@
         set-query-schema (make-set-query-schema)
 
         entity-counts (if (= :function-specific entity-count)
-                       [1000]   ;; use at least 1 Mio ;; 1000 plausible
-                       entity-count)
+                        [1000]                              ; use at least 1 Mio, 1000 plausible
+                        entity-count)
 
         res (doall (for [n-entities entity-counts
                          {:keys [lib backend schema-on-read temporal-index] :as config} configs
-                         :let [db-context {:backend backend
-                                        :schema-on-read schema-on-read
-                                        :temporal-index temporal-index
-                                        :entities n-entities}]]
+                         :let [db-context {:backend        backend
+                                           :schema-on-read schema-on-read
+                                           :temporal-index temporal-index
+                                           :entities       n-entities}]]
                      (try
                        (println " SET_QUERY - Number of entities in database:" n-entities)
                        (println "             Config:" config)
 
                        (let [schema (if schema-on-read [] set-query-schema)
-                             entities (mapv #(make-set-query-entity %) (range n-entities))
+                             entities (mapv #(make-set-query-entity %)
+                                            (range n-entities))
                              conn (db/prepare-db-and-connect lib config schema entities)
                              db (db/db lib conn)
                              measurements (run-query-combinations lib measure-function resource db options db-context)]

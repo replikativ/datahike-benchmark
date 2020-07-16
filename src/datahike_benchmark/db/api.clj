@@ -22,10 +22,11 @@
 (def ^{:arglists '([lib query db])} q db/q)
 
 (def ^{:arglists '([lib config args])
-       :doc "Creates a new empty database"} init db/init)
+       :doc      "Creates a new empty database"} init db/init)
 
 
 ;; Others
+
 
 (defn init-and-connect [lib config & args]
   (init lib config args)

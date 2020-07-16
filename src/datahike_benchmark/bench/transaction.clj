@@ -14,7 +14,7 @@
         [tx-seed db-seed] (repeatedly 2 (u/int-generator seed))
 
         db-datom-counts (if (= :function-specific db-datom-count)
-                          (u/int-linspace 0 1000 11) ;; for 8192 memory exception
+                          (u/int-linspace 0 1000 11)        ;; for 8192 memory exception
                           db-datom-count)
 
         tx-datom-counts (if (= :function-specific tx-datom-counts)
@@ -24,9 +24,9 @@
         res (doall (for [n-db-datoms db-datom-counts
                          n-tx-datoms tx-datom-counts
                          {:keys [lib backend schema-on-read temporal-index] :as config} configs
-                         :let [context {:datoms n-tx-datoms
-                                        :db-size n-db-datoms
-                                        :backend         backend
+                         :let [context {:datoms         n-tx-datoms
+                                        :db-size        n-db-datoms
+                                        :backend        backend
                                         :schema-on-read schema-on-read
                                         :temporal-index temporal-index}]]
                      (try
@@ -37,8 +37,8 @@
 
                        (let [db-datom-gen (u/tx-generator :name :db.type/string n-db-datoms db-seed)
                              tx-datom-gen (u/tx-generator :name :db.type/string n-tx-datoms tx-seed)
-                             fn-args {:config config
-                                      :schema schema
+                             fn-args {:config       config
+                                      :schema       schema
                                       :db-datom-gen db-datom-gen
                                       :tx-datom-gen tx-datom-gen}
 
@@ -50,9 +50,9 @@
                          (println "  Standard deviation:" sd unit)
 
                          (merge context
-                                {:mean mean
+                                {:mean   mean
                                  :median median
-                                 :sd sd}))
+                                 :sd     sd}))
 
                        (catch Exception e (u/error-handling e options context))
                        (catch AssertionError e (u/error-handling e options context)))))]

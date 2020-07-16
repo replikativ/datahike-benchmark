@@ -29,7 +29,7 @@
   (apply concat (map #(map (fn [[k v]] (vector 0 k v :db/add)) %) entities)))
 
 (defn entities->values [entities]
-  (apply concat (map #(map second %) entities)) )
+  (apply concat (map #(map second %) entities)))
 
 (defn entities->nodes [conn entities]
   (if (= (:config conn) "values")
@@ -40,7 +40,7 @@
 ;; Multimethods
 
 (defmethod db/connect :hitchhiker [_ config]
-  {:tree (get @memory config)
+  {:tree   (get @memory config)
    :config config})
 
 (defmethod db/release :hitchhiker [_ _] nil)
