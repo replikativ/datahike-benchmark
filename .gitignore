@@ -16,6 +16,6 @@ target
 *.png
 *.csv
 *.log
-plots
-data
+./plots
+./data
 doc
