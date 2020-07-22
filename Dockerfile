@@ -12,7 +12,7 @@ RUN     mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" ap
 CMD rm "/tmp/signals/benchmarks-finished" \
     && echo "Signal file for finished benchmark creation deleted!"; \
     echo "Starting benchmarking at $(date)"; \
-    java -jar app-standalone.jar -u "datahike:file:///tmp/output-db" -p "/tmp/plots" -b dh-mem-hht -t -j \
+    java -jar app-standalone.jar -u "datahike:file:///tmp/output-db" -p "/tmp/plots" -b dh-mem-hht -t -j -f "connection" \
     && touch "/tmp/signals/benchmarks-finished" \
     && echo "Signal for finished benchmark creation sent" \
     && echo "Finished benchmarking at $(date)";

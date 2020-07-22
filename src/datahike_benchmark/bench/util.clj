@@ -22,7 +22,7 @@
                (println "    " item))))))
 
 (defn save-error-report [error options context]
-  (let [filename (c/error-filename)]
+  (let [filename (c/error-filename (:error-dir options))]
     (spit filename
           (with-out-str
             (pprint

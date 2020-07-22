@@ -9,9 +9,9 @@
 
 ;; Output
 
-(def plot-dir "./plots")
-(def data-dir "./data")
-(def error-dir "/tmp/datahike-benchmark-errors")
+(def default-plot-dir "./plots")
+(def default-data-dir "./data")
+(def default-error-dir "/tmp/datahike-benchmark-errors")
 
 (def date-format "yyyy-MM-dd_HH-mm-ss")
 
@@ -23,13 +23,13 @@
        "."
        ext))
 
-(defn data-filename [subject resource]
+(defn data-filename [data-dir subject resource]
   (filename data-dir (name subject) (name resource) "csv"))
 
-(defn plot-filename [subject file-suffix]
+(defn plot-filename [plot-dir subject file-suffix]
   (filename plot-dir (name subject) file-suffix "png"))
 
-(defn error-filename []
+(defn error-filename [error-dir]
   (filename error-dir "error" "" "edn"))
 
 

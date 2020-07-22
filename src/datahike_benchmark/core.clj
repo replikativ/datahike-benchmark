@@ -32,11 +32,15 @@
    ["-j" "--use-java" "Use Java Runtime memory functions for space measurements" :default false]
    ["-u" "--save-to-db URI" "Save results to datahike database with given URI instead of file" :default nil]
 
-   ["-n" "--data-dir DIR" "Data directory" :default c/data-dir
+   ["-n" "--data-dir DIR" "Data directory" :default c/default-data-dir
     :validate [#(or (not (.exists (io/file %)))
                     (.isDirectory (io/file %)))
                "Path must be a directory if it already exists. Given: "]]
-   ["-p" "--plot-dir DIR" "Plot directory" :default c/plot-dir
+   ["-p" "--plot-dir DIR" "Plot directory" :default c/default-plot-dir
+    :validate [#(or (not (.exists (io/file %)))
+                    (.isDirectory (io/file %)))
+               "Path must be a directory if it already exists"]]
+   ["-m" "--error-dir DIR" "Error directory" :default c/default-error-dir
     :validate [#(or (not (.exists (io/file %)))
                     (.isDirectory (io/file %)))
                "Path must be a directory if it already exists"]]
@@ -112,7 +116,7 @@
       (do
         (when-not (.exists (io/file (:data-dir options)))
           (.mkdir (io/file (:data-dir options))))
-        (u/write-as-csv measurements (c/data-filename subject resource)))
+        (u/write-as-csv measurements (c/data-filename (:data-dir options) subject resource)))
       (do (when-not (.exists (io/file (:data-dir options)))
             (.mkdir (io/file (:data-dir options))))
           (u/write-to-db measurements subject resource (:save-to-db options))))
@@ -126,7 +130,7 @@
       (doall (for [[plot file-suffix] plots]
                (do
                  ;;    (ch/view plot)
-                 (ch/spit plot (c/plot-filename subject file-suffix))))))
+                 (ch/spit plot (c/plot-filename (:plot-dir options) subject file-suffix))))))
     (print " saved\n")))
 
 
