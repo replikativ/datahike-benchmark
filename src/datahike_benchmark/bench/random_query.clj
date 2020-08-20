@@ -65,7 +65,7 @@
 
 (defn make-entity [base-map ident-prefix n-attributes max-attribute value-list shuffle-fn]
   (into base-map
-        (map (fn [i v] [(keyword (str ident-prefix i)) v])  ;; TODO: transducer
+        (map (fn [i v] [(keyword (str ident-prefix i)) v])
              (take n-attributes (shuffle-fn (range max-attribute)))
              value-list)))
 

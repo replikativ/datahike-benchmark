@@ -31,24 +31,16 @@
            {:iteration iteration
             :resource resource}))
 
-;; Measure time using clojure.core/time
+;; Measure time similar to clojure.core/time
 
-(defmacro with-out-str-data-map
-  [& body]
-  `(let [s# (new StringWriter)]
-     (binding [*out* s#]
-       (let [r# ~@body]
-         {:res r#
-          :str (str s#)}))))
+(defmacro timed
+  "Evaluates expr and measures time equivalently to core.time function. Returns the value of expr and the time in a map."
+  [expr]
+  `(let [start# (. System (nanoTime))
+         ret# ~expr]
+     {:res ret# :t (/ (double (- (. System (nanoTime)) start#)) 1000000.0)}))
 
-(defn get-time-with-res
-  "Return result and execution time of function as vector [result time]"
-  [f]
-  (let [res (with-out-str-data-map (time (f)))]
-    [(:res res) (read-string (nth (str/split (:str res) #" ")
-                                  2))]))
-
-(defmethod measure [:time :core.time]
+(defmethod measure [:time :simple]
   [_ _ _ iterations function lib f-args]
   (let [setup-fn (f/get-setup-fn function lib f-args)
         fn-to-measure (f/get-fn-to-measure function lib f-args)
@@ -56,7 +48,7 @@
 
         times (vec (for [i (range 0 iterations)]
                      (try (let [args (setup-fn)
-                                [res t] (get-time-with-res (fn [] (fn-to-measure args)))]
+                                {:keys [res t]} (timed (fn-to-measure args))]
                             (tear-down-fn args res)
                             t)
                           (catch Exception e (throw (error e i :time)))

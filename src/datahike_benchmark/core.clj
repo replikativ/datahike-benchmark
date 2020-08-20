@@ -152,7 +152,7 @@
                              (filter #(contains? dbs-used (:db %))))
               ext-options (assoc options
                             :databases databases
-                            :time-method (if (:use-criterium options) :criterium :core.time)
+                            :time-method (if (:use-criterium options) :criterium :simple)
                             :space-method (if (:use-java options) :java :profiler))
               functions (parse-multi (:only-function options) (:except-function options) implemented-functions)]
 

@@ -17,7 +17,7 @@ docker-compose down --volumes
 
 No prerequisites.
 
-Depending on your choice, this tool uses the built in [time](https://clojuredocs.org/clojure.core/time) function or [criterium](https://github.com/hugoduncan/criterium) for the time measurements, none of them require further installations.
+Depending on your choice, this tool uses a macro similar to the built in [time](https://clojuredocs.org/clojure.core/time) function or [criterium](https://github.com/hugoduncan/criterium) for the time measurements, none of them require further installations.
 
 ### Space Measurements
 
