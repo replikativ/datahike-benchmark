@@ -10,9 +10,9 @@
 (defn bench
   "Measures resource of function or code chunk with given method
   Implemented resource-method pairings:
-    #{[:time :core.time]
+    #{[:time :simple]
       [:time :criterium]
-      [:space :profiler]
-      [:space :java]}"
+      [:space :perf]
+      [:space ::jvm]}"
   [function resource method options]
   (b/bench function resource method options))

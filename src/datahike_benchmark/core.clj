@@ -29,7 +29,7 @@
    ["-a" "--space-only" "Measure only heap allocations" :default false]
    ["-t" "--time-only" "Measure only execution time" :default false]
    ["-c" "--use-criterium" "Use criterium library for time measurements" :default false]
-   ["-j" "--use-java" "Use Java Runtime memory functions for space measurements" :default false]
+   ["-J" "--use-perf" "Use perf events for space measurements" :default false]
    ["-u" "--save-to-db URI" "Save results to datahike database with given URI instead of file" :default nil]
 
    ["-n" "--data-dir DIR" "Data directory" :default c/default-data-dir
@@ -49,11 +49,11 @@
     :default (rand-int c/max-int)
     :parse-fn #(Integer/parseInt %)]
    ["-g" "--time-step STEP"
-    "Step size for measurements in ms. Used for measuring space with Java."
+    "Step size for measurements in ms. Used for measuring space with JVM runtime functions."
     :default 5
     :parse-fn #(Integer/parseInt %)]
    ["-d" "--space-step STEP"
-    "Step size for measurements in kB. Used for measuring space with Profiler."
+    "Step size for measurements in kB. Used for measuring space with profiler and perf events."
     :default 5
     :parse-fn #(Integer/parseInt %)]
 
@@ -153,7 +153,7 @@
               ext-options (assoc options
                             :databases databases
                             :time-method (if (:use-criterium options) :criterium :simple)
-                            :space-method (if (:use-java options) :java :profiler))
+                            :space-method (if (:use-perf options) :perf :jvm))
               functions (parse-multi (:only-function options) (:except-function options) implemented-functions)]
 
           (println "Options used: ")

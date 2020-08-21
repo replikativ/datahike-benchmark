@@ -51,7 +51,7 @@
   (println (str "Getting connection " (name resource) "..."))
   (let [configs (remove #(= :dat-mem (:db %)) (:databases options))
         iter (:connection (:iterations options))
-        f (if (or (= method :profiler)
+        f (if (or (= method :perf)
                   (= method :criterium))
             (partial m/measure resource method options iter :connection-release) ;; allows iterations without setting up new stuff before measurement
             (partial m/measure resource method options iter :connection))]

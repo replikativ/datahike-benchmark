@@ -55,7 +55,7 @@ Options:
  | -a, --space-only               | Measure only heap allocations                                                    | false                                        |
  | -t, --time-only                | Measure only execution time                                                      | false                                        |
  | -c, --use-criterium            | Use criterium library for time measurements                                      | false                                        |
- | -j, --use-java                 | Use Java Runtime memory functions for space measurements                         | false                                        |
+ | -j, --use-perf                 | Use perf events for space measurements                                           | false                                        |
  | -n, --data-dir                 | Data directory                                                                   | "./data"                                     |
  | -p, --plot-dir                 | Plot directory                                                                   | "./plots"                                    |
  | -u, --save-to-db URI           | Save results to datahike database with given URI instead of file                 | nil                                          |

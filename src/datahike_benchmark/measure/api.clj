@@ -87,7 +87,7 @@
         (Thread/sleep time-step)))))
 
 
-(defmethod measure [:space :java]
+(defmethod measure [:space :jvm]
   [_ _ options iterations function lib f-args]              ;; TODO: options hier destructuren
   (let [{:keys [time-step]} options  ;; in ms
         setup-fn (f/get-setup-fn function lib f-args)
@@ -136,7 +136,7 @@
 
 
 
-(defmethod measure [:space :profiler]
+(defmethod measure [:space :perf]
   [_ _ options iterations function lib f-args]
    (let [{:keys [space-step]} options
          one-time-setup-fn (f/get-one-time-setup-fn function lib f-args)
