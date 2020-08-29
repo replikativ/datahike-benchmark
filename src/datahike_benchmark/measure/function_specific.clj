@@ -15,18 +15,20 @@
 ;;   setup-fn as single argument)
 ;;
 ;; Two call principles of datahike-benchmark.measure/measure:
+;;
 ;;        (def samples
 ;;          (dotimes [i iterations]
 ;;            (let [args (setup-fn)
 ;;                  res (f-to-measure args)]
 ;;              (tear-down-fn args res))
+;;
 ;;  or if new setup not possible for each iteration:
+;;
 ;;        (def samples
-;;          (let [args (setup-fn)
-;;                s (dotimes [i iterations]
-;;                      (f-to-measure args))]
-;;            (tear-down-fn args)
-;;          s
+;;          (let [args (setup-fn)]
+;;            (dotimes [i iterations]
+;;              (f-to-measure args))
+;;            (tear-down-fn args)))
 ;;
 
 (defmulti get-setup-fn (fn [function _ _] function))
@@ -36,19 +38,13 @@
 (defmulti get-one-time-tear-down-fn (fn [function _ _] function))
 
 
-(defn use-uri [config]
-  (or (not (= :datahike (:lib config)))
-      (= :pg (get-in config [:store :backend]))))
-
 ;; Connection
 
 (defmethod get-setup-fn :connection [_ _ _]
   (fn [] nil))
 
-(defmethod get-fn-to-measure :connection [_ lib fn-args]
-  (fn [_] (db/connect lib (if (use-uri fn-args)
-                            (:uri fn-args)
-                            (:store fn-args)))))
+(defmethod get-fn-to-measure :connection [_ lib config]
+  (fn [_] (db/connect lib config)))
 
 (defmethod get-tear-down-fn :connection [_ lib _]
   (fn [_ conn]
@@ -60,10 +56,8 @@
 (defmethod get-one-time-setup-fn :connection-release [_ _ _]
   (fn [] nil))
 
-(defmethod get-fn-to-measure :connection-release [_ lib fn-args]
-  (fn [_] (db/release lib (db/connect lib (if (use-uri fn-args)
-                                            (:uri fn-args)
-                                            (:store fn-args))))))
+(defmethod get-fn-to-measure :connection-release [_ lib config]
+  (fn [_] (db/release lib (db/connect lib config))))
 
 (defmethod get-one-time-tear-down-fn :connection-release [_ _ _]
   (fn [_] nil))
@@ -73,12 +67,12 @@
 
 (defn prepare-transaction-measurements [lib f-args]
   (let [{:keys [config schema db-datom-gen tx-datom-gen]} f-args
-        conn (db/prepare-db-and-connect lib config schema (db-datom-gen))
+        conn    (db/prepare-db-and-connect lib config schema (db-datom-gen))
         tx-data (tx-datom-gen)]
     [conn tx-data]))
 
 (defmethod get-setup-fn :transaction [_ lib fn-args]
-  (fn [] (prepare-transaction-measurements lib fn-args))) ; only needed here so db does not fill up more with each iteration
+  (fn [] (prepare-transaction-measurements lib fn-args)))   ; only needed here so db does not fill up more with each iteration
 
 (defmethod get-one-time-setup-fn :transaction [_ lib fn-args]
   (fn [] (prepare-transaction-measurements lib fn-args)))

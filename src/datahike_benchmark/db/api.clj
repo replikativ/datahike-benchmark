@@ -21,29 +21,21 @@
 
 (def ^{:arglists '([lib query db])} q db/q)
 
-(def ^{:arglists '([lib config args])
+(def ^{:arglists '([lib config])
        :doc      "Creates a new empty database"} init db/init)
 
 
 ;; Others
 
 
-(defn init-and-connect [lib config & args]
-  (init lib config args)
+(defn init-and-connect [lib config]
+  (init lib config)
   (connect lib config))
 
-(defn use-uri [config]
-  (or (not (= :datahike (:lib config)))
-      (= :pg (get-in config [:store :backend]))))
-
 (defn prepare-db-and-connect [lib config schema tx]
-  (let [conn (init-and-connect lib (if (use-uri config)
-                                     (:uri config)
-                                     (:store config))
-                               :schema-on-read (:schema-on-read config)
-                               :temporal-index (:temporal-index config)
-                               :index (:index config))]
-    (when (not (:schema-on-read config))
+  (let [conn (init-and-connect lib config)]
+    (when (or (not= lib :datahike)
+              (= :write (get-in config [:dh-config :schema-flexibility])))
       (transact lib conn schema))
     (transact lib conn tx)
     conn))

@@ -12,11 +12,11 @@
 
 (def memory (atom {}))
 
-(defn create [config]
-  (swap! memory assoc config (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
+(defn create-tree [type]
+  (swap! memory assoc type (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
 
-(defn delete [config]
-  (swap! memory dissoc config))
+(defn delete-tree [type]
+  (swap! memory dissoc type))
 
 (defn insert-many [tree values]
   (async/<??
@@ -32,16 +32,16 @@
   (apply concat (map #(map second %) entities)))
 
 (defn entities->nodes [conn entities]
-  (if (= (:config conn) "values")
+  (if (= (:type conn) :values)
     (entities->values entities)
     (entities->datoms entities)))
 
 
 ;; Multimethods
 
-(defmethod db/connect :hitchhiker [_ config]
-  {:tree   (get @memory config)
-   :config config})
+(defmethod db/connect :hitchhiker [_ {:keys [tree-type]}]
+  {:tree   (get @memory type)
+   :type tree-type})
 
 (defmethod db/release :hitchhiker [_ _] nil)
 
@@ -49,9 +49,9 @@
   (let [new-tree (insert-many (:tree conn) (entities->nodes conn tx))]
     (assoc conn :tree new-tree)))
 
-(defmethod db/init :hitchhiker [_ config _]
-  (delete config)
-  (create config))
+(defmethod db/init :hitchhiker [_ {:keys [tree-type]}]
+  (delete-tree tree-type)
+  (create-tree tree-type))
 
 
 

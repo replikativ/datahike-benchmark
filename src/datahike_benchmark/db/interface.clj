@@ -11,4 +11,4 @@
 
 (defmulti q (fn [lib _ _] lib))
 
-(defmulti init (fn [lib _ _] lib))
+(defmulti init (fn [lib _] lib))

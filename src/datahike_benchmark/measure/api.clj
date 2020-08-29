@@ -88,7 +88,7 @@
 
 
 (defmethod measure [:space :jvm]
-  [_ _ options iterations function lib f-args]              ;; TODO: options hier destructuren
+  [_ _ options iterations function lib f-args]
   (let [{:keys [time-step]} options  ;; in ms
         setup-fn (f/get-setup-fn function lib f-args)
         fn-to-measure (f/get-fn-to-measure function lib f-args)
@@ -144,8 +144,8 @@
          one-time-tear-down-fn (f/get-one-time-tear-down-fn function lib f-args)
          args (one-time-setup-fn)
          data (profile-space space-step iterations fn-to-measure args)
-         relevant-data (filter #(map (fn [lib] clojure.string/includes? (first %) (name lib)) ;; TODO: bbatsov, clojure styleguide, nicht mischen
-                                     c/libs)
+         relevant-data (filter (fn [line] (map (fn [lib] clojure.string/includes? (first line) (name lib))
+                                               c/libs))
                                 data)
          sample-counts (remove nil?
                                (map #(try (->> (filter (fn [x] (> (count x) 0)) %)

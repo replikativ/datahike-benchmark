@@ -28,9 +28,9 @@
 
 
 (def set-queries
-  (let [count-query '{:find [(count ?e)] :in [$] :where []}
-        sum-query '{:find [(sum ?s)] :with [?e] :in [$] :where []}
-        res2-query '{:find [?res1 ?res2] :with [?e] :in [$] :where []}
+  (let [count-query      '{:find [(count ?e)] :in [$] :where []}
+        sum-query        '{:find [(sum ?s)] :with [?e] :in [$] :where []}
+        res2-query       '{:find [?res1 ?res2] :with [?e] :in [$] :where []}
         res2-count-query '{:find [?res1 ?res2 (count ?e)] :in [$] :where []}] ;; implicit grouping
 
     (concat
@@ -160,11 +160,11 @@
 
 
 (defn make-set-query-entity [index]
-  (let [int-cols (mapv #(vector (keyword (str "K" %)) (long (rand-int %)))
-                       [500000 250000 100000 40000 10000 1000 100 25 10 5 4 2])
+  (let [int-cols      (mapv #(vector (keyword (str "K" %)) (long (rand-int %)))
+                            [500000 250000 100000 40000 10000 1000 100 25 10 5 4 2])
         first-str-col [:S1 (rand-str 8)]
-        str-cols (mapv #(vector (keyword (str "S" %)) (rand-str 20))
-                       [2 3 4 5 6 7 8])]
+        str-cols      (mapv #(vector (keyword (str "S" %)) (rand-str 20))
+                            [2 3 4 5 6 7 8])]
     (into {:KSEQ index}
           (concat int-cols [first-str-col] str-cols))))
 
@@ -180,7 +180,7 @@
                             (let [fn-args {:db        db
                                            :query-gen #(identity query)}
                                   {:keys [mean median sd]} (measure-function lib fn-args)
-                                  unit (c/unit resource)]
+                                  unit    (c/unit resource)]
 
                               (println "  Mean:" mean unit)
                               (println "  Median:" median unit)
@@ -199,41 +199,42 @@
   "Returns observations"
   [configs measure-function resource options]
   (let [{:keys [entity-count]} options
-        set-query-schema (make-set-query-schema)
+        schema        (make-set-query-schema)
 
         entity-counts (if (= :function-specific entity-count)
                         [1000]                              ; use at least 1 Mio, 1000 plausible
                         entity-count)
 
-        res (doall (for [n-entities entity-counts
-                         {:keys [lib backend schema-on-read temporal-index] :as config} configs
-                         :let [db-context {:backend        backend
-                                           :schema-on-read schema-on-read
-                                           :temporal-index temporal-index
-                                           :entities       n-entities}]]
-                     (try
-                       (println " SET_QUERY - Number of entities in database:" n-entities)
-                       (println "             Config:" config)
+        res           (doall (for [n-entities entity-counts
+                                   {:keys [lib display-name] :as config} configs
+                                   :let [schema-flexibility (get-in config [:dh-config :schema-flexibility] (c/default-schema-flexibility))
+                                         keep-history?      (get-in config [:dh-config :keep-history?] (c/default-keep-history?))
+                                         db-context         {:backend            display-name
+                                                             :schema-flexibility schema-flexibility
+                                                             :keep-history?      keep-history?
+                                                             :entities           n-entities}]]
+                               (try
+                                 (println " SET_QUERY - Number of entities in database:" n-entities)
+                                 (println "             Config:" config)
 
-                       (let [schema (if schema-on-read [] set-query-schema)
-                             entities (mapv #(make-set-query-entity %)
-                                            (range n-entities))
-                             conn (db/prepare-db-and-connect lib config schema entities)
-                             db (db/db lib conn)
-                             measurements (run-query-combinations lib measure-function resource db options db-context)]
+                                 (let [entities     (mapv #(make-set-query-entity %)
+                                                          (range n-entities))
+                                       conn         (db/prepare-db-and-connect lib config schema entities)
+                                       db           (db/db lib conn)
+                                       measurements (run-query-combinations lib measure-function resource db options db-context)]
 
-                         (db/release lib conn)
+                                   (db/release lib conn)
 
-                         measurements)
+                                   measurements)
 
-                       (catch Exception e (u/error-handling e options db-context))
-                       (catch AssertionError e (u/error-handling e options db-context)))))]
+                                 (catch Exception e (u/error-handling e options db-context))
+                                 (catch AssertionError e (u/error-handling e options db-context)))))]
     (remove empty? (apply concat res))))
 
 
 (defmethod b/bench :set-query [_ resource method options]
   (println (str "Getting set-query " (name resource) "..."))
   (let [configs (remove #(= :hitchhiker (:lib %)) (:databases options))
-        iter (:query (:iterations options))
-        f (partial m/measure resource method options iter :query)]
+        iter    (:query (:iterations options))
+        f       (partial m/measure resource method options iter :query)]
     (run-combinations configs f resource options)))

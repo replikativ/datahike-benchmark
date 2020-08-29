@@ -1,18 +1,28 @@
 version: "3.7"
 services:
   postgres:
-    image: postgres:9.6.2
+    image: postgres:12.4
     ports:
       - "5440:5432"
     volumes:
-      - ./docker-postgres-databases:/docker-entrypoint-initdb.d
+      - ./docker-postgres:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRES_DATABASES="performance-s0-t0", "performance-s0-t1", "performance-s1-t0", "performance-s1-t1"
+      - POSTGRES_DATABASES="performance-sr-t0", "performance-sr-t1", "performance-sw-t0", "performance-sw-t1"
       - POSTGRES_USER=datahike
       - POSTGRES_PASSWORD=clojure
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker-mysql:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_DATABASES="performance-sr-t0", "performance-sr-t1", "performance-sw-t0", "performance-sw-t1"
+      - MYSQL_USER=datahike
+      - MYSQL_RANDOM_ROOT_PASSWORD=clojure
 
   datomic:
-    image: akiel/datomic-free:0.9.5703-2
+    image: akiel/datomic-free:0.9.5703-3
     ports:
       - "4334-4336:4334-4336"
     environment:
@@ -26,6 +36,7 @@ services:
     network_mode: "host"
     depends_on:
       - postgres
+      - mysql
       - datomic
     volumes:
       - db:/tmp/output-db

@@ -104,17 +104,19 @@ LIB can be one of:
 - hitchhiker
 
 DBNAME can be one of:
- | id         | description                                      |
- |------------|--------------------------------------------------|
- | dh-mem-hht | datahike in-memory with hitchhiker-tree index    | 
- | dh-mem-set | datahike in-memory with persistent set index     |
- | dh-psql    | datahike with Postgres and hitchhiker-tree index |
- | dh-level   | datahike with Postgres and hitchhiker-tree index |
- | dh-file    | datahike with LevelDB and hitchhiker-tree index  |
- | dat-mem    | datomic in-memory                                |
- | dat-free   | datomic free                                     |
- | hht-dat    | HHT direct using raw values                      |
- | hht-val    | HHT direct using datoms                          |
+ | id         | description                                          |
+ |------------|------------------------------------------------------|
+ | dh-mem-hht | datahike in-memory with hitchhiker-tree index        | 
+ | dh-mem-set | datahike in-memory with persistent set index         |
+ | dh-file    | datahike with file backend and hitchhiker-tree index |
+ | dh-psql    | datahike with Postgres and hitchhiker-tree index     |
+ | dh-mysql   | datahike with MySQL and hitchhiker-tree index        |
+ | dh-mh2     | datahike with H2 in-memory and hitchhiker-tree index |
+ | dh-level   | datahike with LevelDB and hitchhiker-tree index      |
+ | dat-mem    | datomic in-memory                                    |
+ | dat-free   | datomic free                                         |
+ | hht-dat    | hitchhiker-tree direct using raw values              |
+ | hht-val    | hitchhiker-tree direct using datoms                  |
 
 You can see the results as csv files in `./data` and as charts in `./plots`.
 

@@ -3,7 +3,7 @@
             [datomic.api :as d]))
 
 
-(defmethod db/connect :datomic [_ config] (d/connect config))
+(defmethod db/connect :datomic [_ {:keys [uri]}] (d/connect uri))
 
 (defmethod db/transact :datomic [_ conn tx] (deref (d/transact conn tx)))
 
@@ -13,6 +13,6 @@
 
 (defmethod db/q :datomic [_ query db] (d/q query db))
 
-(defmethod db/init :datomic [_ config _]
-  (d/delete-database config)
-  (d/create-database config))
+(defmethod db/init :datomic [_ {:keys [uri]}]
+  (d/delete-database uri)
+  (d/create-database uri))

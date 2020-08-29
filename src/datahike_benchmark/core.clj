@@ -11,8 +11,6 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-;; TODO: transducer verwenden!
-
 (def implemented-libs (set (map (comp name :lib) c/db-configurations)))
 (def implemented-dbs (set (map (comp name :db) c/db-configurations)))
 (def implemented-functions #{"connection" "transaction" "random-query"

@@ -13,6 +13,6 @@
     #{[:time :simple]
       [:time :criterium]
       [:space :perf]
-      [:space ::jvm]}"
+      [:space :jvm]}"
   [function resource method options]
   (b/bench function resource method options))

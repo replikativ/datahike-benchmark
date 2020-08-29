@@ -1,12 +1,13 @@
 (ns datahike-benchmark.db.datahike
   (:require [datahike-benchmark.db.interface :as db]
             [datahike.api :as d]
-    ;;  [datahike-redis.core]
-            [datahike-postgres.core]
-            [datahike-leveldb.core]))
+    ;;    [datahike-postgres.core]
+            [datahike-jdbc.core]
+    ;;    [datahike-leveldb.core]
+            ))
 
 
-(defmethod db/connect :datahike [_ config] (d/connect config))
+(defmethod db/connect :datahike [_ {:keys [dh-config]}] (d/connect dh-config))
 
 (defmethod db/transact :datahike [_ conn tx] (d/transact conn tx))
 
@@ -16,6 +17,6 @@
 
 (defmethod db/q :datahike [_ query db] (d/q query db))
 
-(defmethod db/init :datahike [_ config args]
-  (d/delete-database config)
-  (apply d/create-database config args))
+(defmethod db/init :datahike [_ {:keys [dh-config]}]
+  (d/delete-database dh-config)
+  (d/create-database dh-config))
