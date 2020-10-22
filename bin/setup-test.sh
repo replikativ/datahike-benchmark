@@ -6,5 +6,3 @@ docker run --detach --publish 3306:3306 --env MYSQL_RANDOM_ROOT_PASSWORD=true --
 
 docker run --detach --publish 4334-4336:4334-4336 --env ADMIN_PASSWORD="clojure" --env DATOMIC_PASSWORD="clojure" akiel/datomic-free:0.9.5703-3
 
-
-lein test

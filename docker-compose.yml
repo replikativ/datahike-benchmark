@@ -3,28 +3,29 @@ services:
   postgres:
     image: postgres:12.4
     ports:
-      - "5440:5432"
+      - "5440"
     volumes:
       - ./docker-postgres:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRES_DATABASES="performance-sr-t0", "performance-sr-t1", "performance-sw-t0", "performance-sw-t1"
+      - POSTGRES_DATABASES="performance_psql_sr_t0", "performance_psql_sr_t1", "performance_psql_sw_t0", "performance_psql_sw_t1"
       - POSTGRES_USER=datahike
       - POSTGRES_PASSWORD=clojure
   mysql:
     image: mysql:8.0
     ports:
-      - "3306:3306"
+      - "3306"
     volumes:
       - ./docker-mysql:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_DATABASES="performance-sr-t0", "performance-sr-t1", "performance-sw-t0", "performance-sw-t1"
-      - MYSQL_USER=datahike
-      - MYSQL_RANDOM_ROOT_PASSWORD=clojure
+      - MYSQL_DATABASES=performance_mysql_sr_t0, performance_mysql_sr_t1, performance_mysql_sw_t0, performance_mysql_sw_t1
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ONETIME_PASSWORD=clojure
 
   datomic:
     image: akiel/datomic-free:0.9.5703-3
     ports:
-      - "4334-4336:4334-4336"
+      - "4334"
     environment:
       - ADMIN_PASSWORD=clojure
       - DATOMIC_PASSWORD=clojure
@@ -32,7 +33,7 @@ services:
   benchmarks:
     build: .
     ports:
-      - "5000:5000"
+      - "5000"
     network_mode: "host"
     depends_on:
       - postgres
@@ -47,7 +48,7 @@ services:
   results:
     build: ./result-presentation
     ports:
-      - "4000:4000"
+      - "4000"
     depends_on:
       - benchmarks
     volumes:

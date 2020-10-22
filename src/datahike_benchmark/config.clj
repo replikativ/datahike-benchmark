@@ -55,7 +55,7 @@
                         :dh-config    {:index :datahike.index/hitchhiker-tree
                                        :store {:backend :file
                                                :dbname  "/tmp/performance-file"}}}
-                       ;;{:backend "LevelDB (HHT)" :uri "datahike:level://" :store {:backend :level :path "/tmp/lvl-performance"} :db :dh-level :index :datahike.index/hitchhiker-tree}
+                       ;;  {:display-name "LevelDB (HHT)" :store {:backend :level :path "/tmp/performance-lvl" :dbname "/tmp/performance-lvl"} :db :dh-level :index :datahike.index/hitchhiker-tree}
                        {:display-name "JDBC Postgres (HHT)"
                         :db           :dh-psql
                         :dh-config    {:index :datahike.index/hitchhiker-tree
@@ -65,7 +65,7 @@
                                                :port     5440
                                                :user     "datahike"
                                                :password "clojure"
-                                               :dbname   "performance-psql"}}}
+                                               :dbname   "performance_psql"}}}
                        {:display-name "JDBC MySql (HHT)"
                         :db           :dh-mysql
                         :dh-config    {:index :datahike.index/hitchhiker-tree
@@ -73,9 +73,9 @@
                                                :dbtype   "mysql"
                                                :host     "localhost"
                                                :port     3306
-                                               :user     "datahike"
-                                               :password "clojure"
-                                               :dbname   "performance-msql"}}}
+                                               :user     "root"
+                                               :password ""
+                                               :dbname   "performance_msql"}}}
                        {:display-name "JDBC H2 (HHT)"
                         :db           :dh-h2
                         :dh-config    {:index :datahike.index/hitchhiker-tree
@@ -89,8 +89,8 @@
   (for [ti          [false true]
         sor         [:read :write]
         base-config datahike-base-configs]
-    (let [suffix (str "-s" (if (= sor :read) "r" "w")
-                      "-t" (if ti 1 0))]
+    (let [suffix (str "_s" (if (= sor :read) "r" "w")
+                      "_t" (if ti 1 0))]
       (-> base-config
           (update-in [:dh-config :store :dbname] str suffix)
           (assoc-in [:dh-config :schema-flexibility] sor)

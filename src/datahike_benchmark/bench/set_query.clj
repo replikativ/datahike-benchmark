@@ -207,8 +207,8 @@
 
         res           (doall (for [n-entities entity-counts
                                    {:keys [lib display-name] :as config} configs
-                                   :let [schema-flexibility (get-in config [:dh-config :schema-flexibility] (c/default-schema-flexibility))
-                                         keep-history?      (get-in config [:dh-config :keep-history?] (c/default-keep-history?))
+                                   :let [schema-flexibility (get-in config [:dh-config :schema-flexibility] c/default-schema-flexibility)
+                                         keep-history?      (get-in config [:dh-config :keep-history?] c/default-keep-history?)
                                          db-context         {:backend            display-name
                                                              :schema-flexibility schema-flexibility
                                                              :keep-history?      keep-history?

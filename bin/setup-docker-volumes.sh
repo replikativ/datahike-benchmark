@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 docker volume create --name=dh-benchmark-db
 docker volume create --name=dh-benchmark-plots
 docker volume create --name=dh-benchmark-errors

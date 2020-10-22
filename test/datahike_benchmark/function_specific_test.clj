@@ -2,6 +2,8 @@
   (:require [clojure.test :refer [is deftest]]
             [datahike-benchmark.bench.set-query :as s]
             [datahike-benchmark.db.api :as db]
+            [datahike.api :as d]
+            [datahike.datom :as dhd]
             [datahike-benchmark.measure.function-specific :as f]))
 
 (def test-config {:display-name "In-Memory (HHT)"
@@ -13,22 +15,27 @@
                                  :keep-history?      false}})
 
 (deftest test-transaction
-  (let [datom-gen      (fn [] {:name "test"})
+  (let [get-av         (fn [datom] [(.-a datom) (.-v datom)])
+        test-tx-data   [{:name "test-tx-datom"}]
         schema         [{:ident :name, :valueType :db.type/string, :cardinality :db.cardinality/one}]
 
         f-args         {:config       test-config
                         :schema       schema
-                        :db-datom-gen datom-gen
-                        :tx-datom-gen datom-gen}
+                        :db-datom-gen (fn [] [{:name "test-db-datom"}])
+                        :tx-datom-gen (fn [] test-tx-data)}
 
         setup-function (f/get-setup-fn :transaction :datahike f-args)
         fn-to-measure  (f/get-fn-to-measure :transaction :datahike f-args)
         tear-down-fn   (f/get-tear-down-fn :transaction :datahike f-args)
 
         [conn tx-data] (setup-function)
-        _              (is (= {:name "test"} tx-data))
+        _              (is (= test-tx-data tx-data))
+        _              (is (= (set (mapv get-av (d/datoms @conn :eavt)))
+                              #{[:name "test-db-datom"]}))
 
         report         (fn-to-measure [conn tx-data])
+        _              (is (= (set (mapv get-av (d/datoms @conn :eavt)))
+                              #{[:name "test-db-datom"] [:name "test-tx-datom"]}))
         _              (is (not (nil? report)))]
 
     (tear-down-fn [conn tx-data] report)))

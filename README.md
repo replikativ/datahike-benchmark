@@ -5,7 +5,7 @@ Commandline tool to run benchmarks and create visualizations for datahike backen
 
 Set up [PostgreSQL](https://www.postgresql.org/) and [Datomic](https://www.datomic.com/) databases using [docker compose](https://docs.docker.com/compose/):
 ``` bash
-docker-compose up postgres datomic
+docker-compose up postgres mysql datomic
 ```
 
 You can clean up the containers with:
@@ -58,6 +58,7 @@ Options:
  | -j, --use-perf                 | Use perf events for space measurements                                           | false                                        |
  | -n, --data-dir                 | Data directory                                                                   | "./data"                                     |
  | -p, --plot-dir                 | Plot directory                                                                   | "./plots"                                    |
+ | -g, --error-dir                | Error directory                                                                  | "./errors"                                   |
  | -u, --save-to-db URI           | Save results to datahike database with given URI instead of file                 | nil                                          |
  | -s, --seed SEED                | Initial seed for data creation                                                   | (rand-int)                                   |
  | -g, --time-step STEP           | Step size for measurements in ms. Used for measuring space with Java.            | 5                                            |
@@ -111,7 +112,7 @@ DBNAME can be one of:
  | dh-file    | datahike with file backend and hitchhiker-tree index |
  | dh-psql    | datahike with Postgres and hitchhiker-tree index     |
  | dh-mysql   | datahike with MySQL and hitchhiker-tree index        |
- | dh-mh2     | datahike with H2 in-memory and hitchhiker-tree index |
+ | dh-h2      | datahike with H2 in-memory and hitchhiker-tree index |
  | dh-level   | datahike with LevelDB and hitchhiker-tree index      |
  | dat-mem    | datomic in-memory                                    |
  | dat-free   | datomic free                                         |

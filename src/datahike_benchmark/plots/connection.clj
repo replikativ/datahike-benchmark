@@ -12,6 +12,9 @@
                              "_" (name resource)
                              "_" (name statistics))
 
+        _ (println backends)
+        _ (println new-file-suffix)
+        _ (println data)
         plot-mapping (->> data
                           (map #(u/add-label-and-config-type %))
                           (remove #(= (:config-type %) 3))
@@ -29,6 +32,7 @@
                           (apply concat)
                           (apply sorted-map)
                           reverse)
+        _ (println plot-mapping)
 
         plot (ch/xy-chart plot-mapping
                           {:title            (str "Connection " (name resource) " (" (name statistics) ") vs. datoms in database")

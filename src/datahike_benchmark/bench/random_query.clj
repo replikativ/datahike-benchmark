@@ -158,8 +158,8 @@
                                      n-ref-attr ref-attr-counts
                                      type       [:db.type/long :db.type/string]
                                      {:keys [lib display-name] :as config} configs
-                                     :let [schema-flexibility (get-in config [:dh-config :schema-flexibility] (c/default-schema-flexibility))
-                                           keep-history?      (get-in config [:dh-config :keep-history?] (c/default-keep-history?))
+                                     :let [schema-flexibility (get-in config [:dh-config :schema-flexibility] c/default-schema-flexibility)
+                                           keep-history?      (get-in config [:dh-config :keep-history?] c/default-keep-history?)
                                            n-attr             (+ 1 (* 2 n-ref-attr))
                                            dtype              (last (split (str type) #"/"))
                                            db-context         {:backend            display-name

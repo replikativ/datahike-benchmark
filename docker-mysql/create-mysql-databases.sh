@@ -5,10 +5,8 @@ set -u
 
 function create_user_and_database() {
     local database=$1
-    echo "  Creating database '$database'"
-    psql -v ON_ERROR_STOP=1 --username "$MYSQL_USER" <<-EOSQL
-        CREATE DATABASE $database;
-EOSQL
+    echo "  Creating database $database"
+    mysql -u "$MYSQL_USER" -e "create database $database"
 }
 
 if [ -n "$MYSQL_DATABASES" ]; then

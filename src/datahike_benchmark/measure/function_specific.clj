@@ -65,17 +65,15 @@
 
 ;; Transaction
 
-(defn prepare-transaction-measurements [lib f-args]
-  (let [{:keys [config schema db-datom-gen tx-datom-gen]} f-args
-        conn    (db/prepare-db-and-connect lib config schema (db-datom-gen))
-        tx-data (tx-datom-gen)]
-    [conn tx-data]))
+(defn prepare-transaction-measurements [{:keys [lib] :as config} schema db-datoms tx-datoms]
+  (let [conn (db/prepare-db-and-connect lib config schema db-datoms)]
+    [conn tx-datoms]))
 
-(defmethod get-setup-fn :transaction [_ lib fn-args]
-  (fn [] (prepare-transaction-measurements lib fn-args)))   ; only needed here so db does not fill up more with each iteration
+(defmethod get-setup-fn :transaction [_ _ {:keys [config schema db-datom-gen tx-datom-gen]}]
+  (fn [] (prepare-transaction-measurements config schema (db-datom-gen) (tx-datom-gen))))   ; needed here so db does not fill up more with each iteration
 
-(defmethod get-one-time-setup-fn :transaction [_ lib fn-args]
-  (fn [] (prepare-transaction-measurements lib fn-args)))
+(defmethod get-one-time-setup-fn :transaction [_ _ {:keys [config schema db-datom-gen tx-datom-gen]}]
+  (fn [] (prepare-transaction-measurements config schema (db-datom-gen) (tx-datom-gen))))
 
 (defmethod get-fn-to-measure :transaction [_ lib _]
   (fn [[conn tx-data]] (db/transact lib conn tx-data)))
@@ -89,14 +87,14 @@
 
 ;; Query
 
-(defmethod get-setup-fn :query [_ _ fn-args]
-  (fn [] ((:query-gen fn-args))))
+(defmethod get-setup-fn :query [_ _ {:keys [query-gen]}]
+  (fn [] (query-gen)))
 
-(defmethod get-one-time-setup-fn :query [_ _ fn-args]
-  (fn [] ((:query-gen fn-args))))
+(defmethod get-one-time-setup-fn :query [_ _ {:keys [query-gen]}]
+  (fn [] (query-gen)))
 
-(defmethod get-fn-to-measure :query [_ lib fn-args]
-  (fn [query] (db/q lib query (:db fn-args))))
+(defmethod get-fn-to-measure :query [_ lib {:keys [db]}]
+  (fn [query] (db/q lib query db)))
 
 (defmethod get-tear-down-fn :query [_ _ _]
   (fn [_ _] nil))

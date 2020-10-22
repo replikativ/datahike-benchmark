@@ -1,9 +1,8 @@
 (ns datahike-benchmark.db.datahike
   (:require [datahike-benchmark.db.interface :as db]
             [datahike.api :as d]
-    ;;    [datahike-postgres.core]
-            [datahike-jdbc.core]
-    ;;    [datahike-leveldb.core]
+      ;;      [datahike-jdbc.core]
+      ;;      [datahike-leveldb.core]
             ))
 
 
