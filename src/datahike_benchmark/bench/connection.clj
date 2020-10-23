@@ -29,7 +29,6 @@
                               (try
                                 (println " CONNECT - Number of datoms in db:" db-datoms)
                                 (println "           Config:" config)
-                                (println "           Seed:" seed)
 
                                 (db/prepare-db lib config schema tx)
 

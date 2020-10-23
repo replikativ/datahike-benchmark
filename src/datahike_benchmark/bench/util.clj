@@ -1,6 +1,7 @@
 (ns datahike-benchmark.bench.util
   (:require [datahike-benchmark.config :as c]
             [clojure.pprint :refer [pprint]]
+            [clojure.java.io :as io]
             [clojure.string :as s])
   (:import (java.util Random Collection ArrayList Collections)
            (clojure.lang RT)))
@@ -21,8 +22,11 @@
       (dorun (for [item rest-important-items]
                (println "    " item))))))
 
-(defn save-error-report [error options context]
-  (let [filename (c/error-filename (:error-dir options))]
+(defn save-error-report [error {:keys [error-dir] :as options} context]
+  (when-not (.exists (io/file error-dir))
+    (.mkdir (io/file error-dir)))
+  (let [filename (c/error-filename error-dir)]
+
     (spit filename
           (with-out-str
             (pprint

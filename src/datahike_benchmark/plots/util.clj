@@ -18,13 +18,6 @@
 
 
 (defn add-label-and-config-type [data-map]
-  (println data-map)
-  (println (let [data-map-with-type (add-config-type data-map)]
-             (case (:config-type data-map-with-type)
-               1 (assoc data-map-with-type :label (str (:backend data-map) " with history"))
-               2 (assoc data-map-with-type :label (str (:backend data-map) " with schema-on-read"))
-               3 (assoc data-map-with-type :label (str (:backend data-map) " with history and schema-on-read"))
-               (assoc data-map-with-type :label (:backend data-map)))))
   (let [data-map-with-type (add-config-type data-map)]
     (case (:config-type data-map-with-type)
       3 (assoc data-map-with-type :label (str (:backend data-map) " with history and schema-on-read"))

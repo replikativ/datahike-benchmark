@@ -54,9 +54,13 @@
                         :db           :dh-file
                         :dh-config    {:index :datahike.index/hitchhiker-tree
                                        :store {:backend :file
-                                               :dbname  "/tmp/performance-file"}}}
-                       ;;  {:display-name "LevelDB (HHT)" :store {:backend :level :path "/tmp/performance-lvl" :dbname "/tmp/performance-lvl"} :db :dh-level :index :datahike.index/hitchhiker-tree}
-                       {:display-name "JDBC Postgres (HHT)"
+                                               :path "/tmp/performance-file"
+                                               :dbname  "performance-file"}}}
+                       #_{:display-name "LevelDB (HHT)"
+                        :db           :dh-level
+                        :dh-config    {:index :datahike.index/hitchhiker-tree}
+                                       :store {:backend :level :path "/tmp/performance-lvl" :dbname "/tmp/performance-lvl"}}
+                       #_{:display-name "JDBC Postgres (HHT)"
                         :db           :dh-psql
                         :dh-config    {:index :datahike.index/hitchhiker-tree
                                        :store {:backend  :jdbc
@@ -66,7 +70,7 @@
                                                :user     "datahike"
                                                :password "clojure"
                                                :dbname   "performance_psql"}}}
-                       {:display-name "JDBC MySql (HHT)"
+                       #_{:display-name "JDBC MySql (HHT)"
                         :db           :dh-mysql
                         :dh-config    {:index :datahike.index/hitchhiker-tree
                                        :store {:backend  :jdbc
@@ -76,7 +80,7 @@
                                                :user     "root"
                                                :password ""
                                                :dbname   "performance_msql"}}}
-                       {:display-name "JDBC H2 (HHT)"
+                       #_{:display-name "JDBC H2 (HHT)"
                         :db           :dh-h2
                         :dh-config    {:index :datahike.index/hitchhiker-tree
                                        :store {:backend :jdbc
@@ -120,8 +124,6 @@
 
 
 ;; Resources that can be measured
-
-(def resources #{:time :space})
 
 (defn unit [resource]
   (case resource

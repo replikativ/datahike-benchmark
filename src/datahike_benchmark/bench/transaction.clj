@@ -35,7 +35,6 @@
                                    (println " TRANSACT: Number of datoms in db:" n-db-datoms)
                                    (println "           Number of datoms per transaction:" n-tx-datoms)
                                    (println "           Config:" config)
-                                   (println "           Seed:" seed)
 
                                    (let [db-datom-gen (u/tx-generator :name :db.type/string n-db-datoms db-seed)
                                          tx-datom-gen (u/tx-generator :name :db.type/string n-tx-datoms tx-seed)

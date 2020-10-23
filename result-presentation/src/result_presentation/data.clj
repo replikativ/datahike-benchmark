@@ -21,13 +21,13 @@
 
 (defn add-config-type [data-map]
   (cond
-    (and (:schema-on-read data-map) (:temporal-index data-map))
+    (and (= :read (:schema-flexibility data-map)) (:keep-history? data-map))
     (assoc data-map :config-type 3)
 
-    (and (:schema-on-read data-map) (not (:temporal-index data-map)))
+    (and (= :read (:schema-flexibility data-map)) (not (:keep-history? data-map)))
     (assoc data-map :config-type 2)
 
-    (and (not (:schema-on-read data-map)) (:temporal-index data-map) )
+    (and (= :write (:schema-flexibility data-map)) (:keep-history? data-map) )
     (assoc data-map :config-type 1)
 
     :else (assoc data-map :config-type 0)))

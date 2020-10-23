@@ -197,6 +197,7 @@
    transaction-space-section
    [:h3 "Query"]
    query-space-section])
+
 (def html
   [:div
    [:h1 "Benchmarking Results"]
@@ -215,4 +216,5 @@
     (when-not (.exists (io/file output-dir))
       (.mkdir (io/file output-dir)))
     (oz/export! html output-file)
-    (println (str "Document has been exported to " output-file))))
+    (println (str "Document has been exported to " output-file))
+    (shutdown-agents)))

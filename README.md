@@ -58,7 +58,7 @@ Options:
  | -j, --use-perf                 | Use perf events for space measurements                                           | false                                        |
  | -n, --data-dir                 | Data directory                                                                   | "./data"                                     |
  | -p, --plot-dir                 | Plot directory                                                                   | "./plots"                                    |
- | -g, --error-dir                | Error directory                                                                  | "./errors"                                   |
+ | -m, --error-dir                | Error directory                                                                  | "./errors"                                   |
  | -u, --save-to-db URI           | Save results to datahike database with given URI instead of file                 | nil                                          |
  | -s, --seed SEED                | Initial seed for data creation                                                   | (rand-int)                                   |
  | -g, --time-step STEP           | Step size for measurements in ms. Used for measuring space with Java.            | 5                                            |

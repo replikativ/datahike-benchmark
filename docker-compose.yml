@@ -42,7 +42,7 @@ services:
     volumes:
       - db:/tmp/output-db
       - plots:/tmp/plots
-      - errors:/tmp/datahike-benchmark-errors
+      - errors:/tmp/errors
       - signals:/tmp/signals
 
   results:

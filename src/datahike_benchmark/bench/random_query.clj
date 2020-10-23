@@ -174,7 +174,6 @@
                                    (println "                Attributes per entity:" n-attr)
                                    (println "                Number of entities in database:" n-entities)
                                    (println "                Config:" config)
-                                   (println "                Seed:" seed)
 
                                    (let [conn               (create-value-ref-db config type n-ref-attr n-entities db-seed)
                                          db                 (db/db lib conn)

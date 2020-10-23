@@ -107,28 +107,24 @@
 
    ["-h" "--help"]])
 
-(defn save [measurements subject resource options]
-  (when (not (:not-save-data options))
+(defn save [measurements subject resource {:keys [not-save-data data-dir save-to-db not-save-plots plot-dir] :as options}]
+  (when (not not-save-data)
     (print (str " Save " (name subject) " data..."))
-    (if (nil? (:save-to-db options))
+    (if (nil? save-to-db)
       (do
-        (when-not (.exists (io/file (:data-dir options)))
-          (.mkdir (io/file (:data-dir options))))
-        (u/write-as-csv measurements (c/data-filename (:data-dir options) subject resource)))
-      (do (when-not (.exists (io/file (:data-dir options)))
-            (.mkdir (io/file (:data-dir options))))
-          (u/write-to-db measurements subject resource (:save-to-db options))))
+        (when-not (.exists (io/file data-dir))
+          (.mkdir (io/file data-dir)))
+        (u/write-as-csv measurements (c/data-filename data-dir subject resource)))
+      (u/write-to-db measurements subject resource save-to-db))
     (print " saved\n"))
 
-  (when (not (:not-save-plots options))
+  (when (not not-save-plots)
     (print (str " Save " (name subject) " plots..."))
-    (when-not (.exists (io/file (:plot-dir options)))
-      (.mkdir (io/file (:plot-dir options))))
+    (when-not (.exists (io/file plot-dir))
+      (.mkdir (io/file plot-dir)))
     (let [plots (p/create-plots subject measurements resource)]
       (doall (for [[plot file-suffix] plots]
-               (do
-                 ;;    (ch/view plot)
-                 (ch/spit plot (c/plot-filename (:plot-dir options) subject file-suffix))))))
+               (ch/spit plot (c/plot-filename plot-dir subject file-suffix)))))
     (print " saved\n")))
 
 
@@ -166,4 +162,5 @@
                      (when (not (:time-only options))
                        (-> (b/bench function :space (:space-method ext-options) ext-options)
                            (save function :space options))))))))))
-  (println "Benchmarking has finished successfully"))
+  (println "Benchmarking has finished successfully")
+  (shutdown-agents))

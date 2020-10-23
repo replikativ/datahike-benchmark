@@ -40,7 +40,7 @@
 ;; Multimethods
 
 (defmethod db/connect :hitchhiker [_ {:keys [tree-type]}]
-  {:tree   (get @memory type)
+  {:tree   (get @memory tree-type)
    :type tree-type})
 
 (defmethod db/release :hitchhiker [_ _] nil)

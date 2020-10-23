@@ -17,6 +17,8 @@ target
 *.png
 *.csv
 *.log
+
 ./plots
 ./data
-doc
+./errors
+./doc

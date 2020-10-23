@@ -17,10 +17,11 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/data.csv "1.0.0"]
 
-                 [io.replikativ/datahike "0.3.3-SNAPSHOT"   ;:exclusions [io.replikativ/konserve]
-                  ]
+                 ;[io.replikativ/datahike "0.3.3-SNAPSHOT"   exclusions [io.replikativ/konserve]]
+
+                 [io.replikativ/datahike "0.3.2"]
                  ;[io.replikativ/datahike-jdbc "0.1.1-SNAPSHOT"]
-                 ;; [io.replikativ/datahike-leveldb "0.1.0"]
+                 ;[io.replikativ/datahike-leveldb "0.1.0"]
                  [com.datomic/datomic-free "0.9.5697"]
 
                  [criterium "0.4.5"]
