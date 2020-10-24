@@ -11,6 +11,7 @@
 
 ;; Functions from interface
 
+
 (def ^{:arglists '([lib config])} connect db/connect)
 
 (def ^{:arglists '([lib conn])} transact db/transact)

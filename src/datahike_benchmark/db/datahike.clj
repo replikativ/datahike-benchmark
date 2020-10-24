@@ -2,9 +2,7 @@
   (:require [datahike-benchmark.db.interface :as db]
             [datahike.api :as d]
       ;;      [datahike-jdbc.core]
-      ;;      [datahike-leveldb.core]
-            ))
-
+            [datahike-leveldb.core]))
 
 (defmethod db/connect :datahike [_ {:keys [dh-config]}] (d/connect dh-config))
 

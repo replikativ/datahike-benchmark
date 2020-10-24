@@ -18,19 +18,19 @@
                       :tx-datom-gen tx-datom-gen}]
 
     (testing "Time measurement with time macro"
-             (let [{:keys [mean]} (time (m/measure :time :simple {} iterations :transaction (:lib config) fn-args))]
-               (println "Mean measured:" mean (c/unit :time))
-               (is (> mean 0))))
+      (let [{:keys [mean]} (time (m/measure :time :simple {} iterations :transaction (:lib config) fn-args))]
+        (println "Mean measured:" mean (c/unit :time))
+        (is (> mean 0))))
 
     (testing "Space measurement with JVM functions"
-             (let [{:keys [mean]} (time (m/measure :space :jvm {:time-step 1} iterations :transaction (:lib config) fn-args))]
-               (println "Mean measured:" mean (c/unit :space))
-               (is (> mean 0))))
+      (let [{:keys [mean]} (time (m/measure :space :jvm {:time-step 1} iterations :transaction (:lib config) fn-args))]
+        (println "Mean measured:" mean (c/unit :space))
+        (is (> mean 0))))
 
     (testing "Space measurement with async-profiler"
-             (let [{:keys [mean]} (time (m/measure :space :perf {:space-step 1} iterations :transaction (:lib config) fn-args))]
-               (println "Mean measured:" mean (c/unit :space))
-               (is (> mean 0))))
+      (let [{:keys [mean]} (time (m/measure :space :perf {:space-step 1} iterations :transaction (:lib config) fn-args))]
+        (println "Mean measured:" mean (c/unit :space))
+        (is (> mean 0))))
 
     (comment (testing "Time measurement with criterium library"
                (let [{:keys [mean]} (time (m/measure :time :criterium {} iterations :transaction (:lib config) fn-args))]

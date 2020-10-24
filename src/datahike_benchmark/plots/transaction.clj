@@ -19,15 +19,15 @@
                               (remove #(= (:config-type %) 3))
                               (group-by :label)
                               (map (fn [[label vals]]
-                                      (let [{backend :backend config-type :config-type} (first vals)]
-                                        [label
-                                         {:x          (map :datoms vals)
-                                          :y          (map statistics vals)
-                                          :error-bars (map :sd vals)
-                                          :style {:marker-type  (get c/x-shapes config-type)
-                                                  :marker-color (get backend-colors backend)
-                                                  :line-style   (get c/x-strokes config-type)
-                                                  :line-color   (get backend-colors backend)}}])))
+                                     (let [{backend :backend config-type :config-type} (first vals)]
+                                       [label
+                                        {:x          (map :datoms vals)
+                                         :y          (map statistics vals)
+                                         :error-bars (map :sd vals)
+                                         :style {:marker-type  (get c/x-shapes config-type)
+                                                 :marker-color (get backend-colors backend)
+                                                 :line-style   (get c/x-strokes config-type)
+                                                 :line-color   (get backend-colors backend)}}])))
                               (apply concat)
                               (apply sorted-map)
                               reverse)
@@ -56,15 +56,15 @@
                               (remove #(= (:config-type %) 3))
                               (group-by :label)
                               (map (fn [[label vals]]
-                                      (let [{backend :backend config-type :config-type} (first vals)]
-                                        [label
-                                         {:x          (map :db-size vals)
-                                          :y          (map statistics vals)
-                                          :error-bars (map :sd vals)
-                                          :style {:marker-type  (get c/x-shapes config-type)
-                                                  :marker-color (get backend-colors backend)
-                                                  :line-style   (get c/x-strokes config-type)
-                                                  :line-color   (get backend-colors backend)}}])))
+                                     (let [{backend :backend config-type :config-type} (first vals)]
+                                       [label
+                                        {:x          (map :db-size vals)
+                                         :y          (map statistics vals)
+                                         :error-bars (map :sd vals)
+                                         :style {:marker-type  (get c/x-shapes config-type)
+                                                 :marker-color (get backend-colors backend)
+                                                 :line-style   (get c/x-strokes config-type)
+                                                 :line-color   (get backend-colors backend)}}])))
                               (apply concat)
                               (apply sorted-map)
                               reverse)
@@ -77,7 +77,6 @@
                                :width            1600
                                :error-bars-color :match-series})]
         [plot new-file-suffix]))))
-
 
 (defmethod p/create-plots :transaction [_ data resource]
   (concat (create-transaction-tx-size-plots data resource :mean "compare-db-sizes")

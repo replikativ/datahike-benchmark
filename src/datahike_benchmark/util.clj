@@ -20,7 +20,7 @@
         (println "Database created: " uri))
     (println "Output database exists: " uri))
   (let [tx (mapv #(assoc % :function (name function)
-                           :resource (name resource))
-                data)
+                         :resource (name resource))
+                 data)
         conn (d/connect uri)]
     (d/transact conn tx)))

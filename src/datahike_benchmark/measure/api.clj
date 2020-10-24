@@ -12,13 +12,15 @@
 ;; Measure resources like time and space (= heap allocations)
 ;;
 
+
 (defmulti measure
-          "Get statistics for measurements.
+  "Get statistics for measurements.
           Arguments: [resource method options iterations function lib f-args]"
-          (fn [resource method _ _ _ _ _] [resource method]))
+  (fn [resource method _ _ _ _ _] [resource method]))
 
 
 ;; Common functions
+
 
 (defn return-map [samples]
   {:samples samples
@@ -58,6 +60,7 @@
 
 ;; Measure time using criterium library
 
+
 (defmethod measure [:time :criterium]
   [_ _ _ _ function lib f-args]
   (let [one-time-setup-fn (f/get-one-time-setup-fn function lib f-args)
@@ -72,6 +75,7 @@
 
 ;; Measure space using Java Runtime methods
 
+
 (defn current-space-used []
   (/ (- (-> (Runtime/getRuntime) (.totalMemory))
         (-> (Runtime/getRuntime) (.freeMemory))) 1024.0)) ;; byte -> kb
@@ -85,7 +89,6 @@
         (when (< (deref res-atom) current-space)
           (reset! res-atom current-space))
         (Thread/sleep time-step)))))
-
 
 (defmethod measure [:space :jvm]
   [_ _ options iterations function lib f-args]
@@ -112,18 +115,17 @@
       (reset! stop-thread true)
       (return-map s))))
 
-
 (defn profile-space [space-step iterations fn-to-measure args]
   (let [file (try (prof/profile
-                    {:event       :alloc
-                     :interval    space-step
-                     :generate-flamegraph? false
-                     :return-file true}
-                    (doall (dotimes [i iterations]
-                             (try
-                               (fn-to-measure args)
-                               (catch Exception e (throw (error e :space i)))
-                               (catch AssertionError e (throw (error e :space i)))))))
+                   {:event       :alloc
+                    :interval    space-step
+                    :generate-flamegraph? false
+                    :return-file true}
+                   (doall (dotimes [i iterations]
+                            (try
+                              (fn-to-measure args)
+                              (catch Exception e (throw (error e :space i)))
+                              (catch AssertionError e (throw (error e :space i)))))))
                   (catch Exception e (if (clojure.string/includes? (.getMessage e) "No stack counts found")
                                        (println "Warning:" (.getMessage e))
                                        (throw e))))
@@ -134,26 +136,24 @@
                        (clojure.string/split-lines (slurp txt-name)))))]
     data))
 
-
-
 (defmethod measure [:space :perf]
   [_ _ options iterations function lib f-args]
-   (let [{:keys [space-step]} options
-         one-time-setup-fn (f/get-one-time-setup-fn function lib f-args)
-         fn-to-measure (f/get-fn-to-measure function lib f-args)
-         one-time-tear-down-fn (f/get-one-time-tear-down-fn function lib f-args)
-         args (one-time-setup-fn)
-         data (profile-space space-step iterations fn-to-measure args)
-         relevant-data (filter (fn [line] (map (fn [lib] clojure.string/includes? (first line) (name lib))
-                                               c/libs))
-                                data)
-         sample-counts (remove nil?
-                               (map #(try (->> (filter (fn [x] (> (count x) 0)) %)
-                                               last
-                                               Integer/parseInt)
-                                          (catch Exception _ nil))
-                                    relevant-data))
-         overall-sample-count (apply + sample-counts)
-         avg-space-allocated (/ (* overall-sample-count space-step) (float iterations))]
-     (one-time-tear-down-fn args)
-     (return-map [avg-space-allocated])))
+  (let [{:keys [space-step]} options
+        one-time-setup-fn (f/get-one-time-setup-fn function lib f-args)
+        fn-to-measure (f/get-fn-to-measure function lib f-args)
+        one-time-tear-down-fn (f/get-one-time-tear-down-fn function lib f-args)
+        args (one-time-setup-fn)
+        data (profile-space space-step iterations fn-to-measure args)
+        relevant-data (filter (fn [line] (map (fn [lib] clojure.string/includes? (first line) (name lib))
+                                              c/libs))
+                              data)
+        sample-counts (remove nil?
+                              (map #(try (->> (filter (fn [x] (> (count x) 0)) %)
+                                              last
+                                              Integer/parseInt)
+                                         (catch Exception _ nil))
+                                   relevant-data))
+        overall-sample-count (apply + sample-counts)
+        avg-space-allocated (/ (* overall-sample-count space-step) (float iterations))]
+    (one-time-tear-down-fn args)
+    (return-map [avg-space-allocated])))

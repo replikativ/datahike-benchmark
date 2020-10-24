@@ -4,10 +4,13 @@
 
 
 ;; Maximum value for integer databases
+
+
 (def max-int Integer/MAX_VALUE)
 
 
 ;; Output
+
 
 (def default-plot-dir "./plots")
 (def default-data-dir "./data")
@@ -35,6 +38,7 @@
 
 ;; Benchmark uris
 
+
 (def default-schema-flexibility :write)
 (def default-keep-history? false)
 
@@ -59,33 +63,35 @@
                        {:display-name "LevelDB (HHT)"
                         :db           :dh-level
                         :dh-config    {:index :datahike.index/hitchhiker-tree}
-                                       :store {:backend :level :path "/tmp/performance-lvl" :dbname "/tmp/performance-lvl"}}
+                        :store {:backend :level
+                                :path "/tmp/performance-lvl"
+                                :dbname "performance-lvl"}}
                        #_{:display-name "JDBC Postgres (HHT)"
-                        :db           :dh-psql
-                        :dh-config    {:index :datahike.index/hitchhiker-tree
-                                       :store {:backend  :jdbc
-                                               :dbtype   "postgresql"
-                                               :host     "localhost"
-                                               :port     5440
-                                               :user     "datahike"
-                                               :password "clojure"
-                                               :dbname   "performance_psql"}}}
+                          :db           :dh-psql
+                          :dh-config    {:index :datahike.index/hitchhiker-tree
+                                         :store {:backend  :jdbc
+                                                 :dbtype   "postgresql"
+                                                 :host     "localhost"
+                                                 :port     5440
+                                                 :user     "datahike"
+                                                 :password "clojure"
+                                                 :dbname   "performance_psql"}}}
                        #_{:display-name "JDBC MySql (HHT)"
-                        :db           :dh-mysql
-                        :dh-config    {:index :datahike.index/hitchhiker-tree
-                                       :store {:backend  :jdbc
-                                               :dbtype   "mysql"
-                                               :host     "localhost"
-                                               :port     3306
-                                               :user     "root"
-                                               :password ""
-                                               :dbname   "performance_msql"}}}
+                          :db           :dh-mysql
+                          :dh-config    {:index :datahike.index/hitchhiker-tree
+                                         :store {:backend  :jdbc
+                                                 :dbtype   "mysql"
+                                                 :host     "localhost"
+                                                 :port     3306
+                                                 :user     "root"
+                                                 :password ""
+                                                 :dbname   "performance_msql"}}}
                        #_{:display-name "JDBC H2 (HHT)"
-                        :db           :dh-h2
-                        :dh-config    {:index :datahike.index/hitchhiker-tree
-                                       :store {:backend :jdbc
-                                               :dbtype  "h2:mem"
-                                               :dbname  "performance-h2"}}}]]
+                          :db           :dh-h2
+                          :dh-config    {:index :datahike.index/hitchhiker-tree
+                                         :store {:backend :jdbc
+                                                 :dbtype  "h2:mem"
+                                                 :dbname  "performance-h2"}}}]]
     (vec (for [info specific-info]
            (merge common-info info)))))
 
@@ -125,6 +131,7 @@
 
 ;; Resources that can be measured
 
+
 (defn unit [resource]
   (case resource
     :space "kB"
@@ -133,6 +140,7 @@
 
 
 ;; xchart values
+
 
 (def x-colors [:red :blue :cyan :green :magenta :orange :pink :yellow :black :light-gray :dark-gray :gray])
 (def x-shapes [:square :circle :diamond :triangle-up :triangle-down])

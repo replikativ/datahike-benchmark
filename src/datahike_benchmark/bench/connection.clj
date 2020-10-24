@@ -5,7 +5,6 @@
             [datahike-benchmark.db.api :as db]
             [datahike-benchmark.config :as c]))
 
-
 (defn run-combinations
   "Returns observations"
   [configs measure-function resource options]
@@ -47,7 +46,6 @@
                                 (catch Exception e (u/error-handling e options context))
                                 (catch AssertionError e (u/error-handling e options context)))))]
     (remove empty? res)))
-
 
 (defmethod b/bench :connection [_ resource method options]
   (println (str "Getting connection " (name resource) "..."))

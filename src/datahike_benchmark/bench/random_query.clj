@@ -6,7 +6,6 @@
             [datahike-benchmark.config :as c]
             [clojure.string :refer [split]]))
 
-
 (defn add-join-clauses [initial-query n-joins n-attr shuffle-fn]
   (let [ref-names    (map #(keyword (str "R" %))
                           (take n-joins (shuffle-fn (range n-attr))))
@@ -30,7 +29,6 @@
                   (update :where conj attr-clause)))
             initial-query
             (map vector attr-symbols join-clauses attr-clauses))))
-
 
 (defn add-direct-clauses [initial-query n-clauses n-attr shuffle-fn]
   (let [attr-names   (map #(keyword (str "A" %))
@@ -62,7 +60,6 @@
   (mapv #(u/make-attr (keyword (str ident-prefix %)) type cardinality)
         (range n-attributes)))
 
-
 (defn make-entity [base-map ident-prefix n-attributes max-attribute value-list shuffle-fn]
   (into base-map
         (map (fn [i v] [(keyword (str ident-prefix i)) v])
@@ -91,26 +88,26 @@
    (println " - thereof reference attributes:" m)
    (println " Number of entities:" e)
    (time
-     (let [shuffle-fn    (u/shuffle-generator seed)
-           schema        (into [(u/make-attr :randomEntity :db.type/boolean)]
-                               (concat (make-hom-schema "A" type :db.cardinality/one n)
-                                       (make-hom-schema "R" :db.type/ref :db.cardinality/one n)))
-           entities      (mapv (fn [_]
-                                 (make-entity {:randomEntity true} "A" m n
-                                              (repeatedly m (u/data-generator type seed))
-                                              shuffle-fn))
-                               (range e))
-           conn          (db/prepare-db-and-connect lib config schema entities)
-           ids           (map first (db/q lib
-                                          '[:find ?e :where [?e :randomEntity]]
-                                          (db/db lib conn)))
-           add-to-entity (mapv (fn [id] (make-entity {:db/id id} "R" m n
-                                                     (take m (shuffle-fn (remove #{id} ids)))
-                                                     shuffle-fn))
-                               ids)]
-       (db/transact lib conn add-to-entity)
-       (print "   ")
-       conn))))
+    (let [shuffle-fn    (u/shuffle-generator seed)
+          schema        (into [(u/make-attr :randomEntity :db.type/boolean)]
+                              (concat (make-hom-schema "A" type :db.cardinality/one n)
+                                      (make-hom-schema "R" :db.type/ref :db.cardinality/one n)))
+          entities      (mapv (fn [_]
+                                (make-entity {:randomEntity true} "A" m n
+                                             (repeatedly m (u/data-generator type seed))
+                                             shuffle-fn))
+                              (range e))
+          conn          (db/prepare-db-and-connect lib config schema entities)
+          ids           (map first (db/q lib
+                                         '[:find ?e :where [?e :randomEntity]]
+                                         (db/db lib conn)))
+          add-to-entity (mapv (fn [id] (make-entity {:db/id id} "R" m n
+                                                    (take m (shuffle-fn (remove #{id} ids)))
+                                                    shuffle-fn))
+                              ids)]
+      (db/transact lib conn add-to-entity)
+      (print "   ")
+      conn))))
 
 (defn run-query-combinations [lib measure-function resource db query-seed options {:keys [n-ref-attr] :as db-context}]
   (remove empty? (doall (for [n-clauses [(* 2 (min n-ref-attr 5))] ; i.e. max 10 clauses
@@ -138,7 +135,6 @@
 
                             (catch Exception e (u/error-handling e options context))
                             (catch AssertionError e (u/error-handling e options context)))))))
-
 
 (defn run-combinations
   "Returns observations"
@@ -187,7 +183,6 @@
                                    (catch Exception e (u/error-handling e options db-context))
                                    (catch AssertionError e (u/error-handling e options db-context)))))]
     (remove empty? (apply concat res))))
-
 
 (defmethod b/bench :random-query [_ resource method options]
   (println (str "Getting random-query " (name resource) "..."))

@@ -36,36 +36,35 @@
         (db/release :datahike conn))))
 
   #_(testing "LevelDB backend (:level)"
-    (let [config (get-dhconfig-for :dh-level)]
-      (db/init :datahike config)
-      (is (d/database-exists? (:dh-config config)))
-      (let [conn (db/connect :datahike config)]
-        (is (not (nil? conn)))
-        (db/release :datahike conn))))
+      (let [config (get-dhconfig-for :dh-level)]
+        (db/init :datahike config)
+        (is (d/database-exists? (:dh-config config)))
+        (let [conn (db/connect :datahike config)]
+          (is (not (nil? conn)))
+          (db/release :datahike conn))))
 
   #_(testing "JDBC backend (:jdbc)"
-    (testing "Postgres database"
-      (let [config (get-dhconfig-for :dh-psql)]
-        (db/init :datahike config)
-        (is (d/database-exists? (:dh-config config)))
-        (let [conn (db/connect :datahike config)]
-          (is (not (nil? conn)))
-          (db/release :datahike conn))))
-    (testing "Mysql database"
-      (let [config (get-dhconfig-for :dh-mysql)]
-        (db/init :datahike config)
-        (is (d/database-exists? (:dh-config config)))
-        (let [conn (db/connect :datahike config)]
-          (is (not (nil? conn)))
-          (db/release :datahike conn))))
-    (testing "H2 database"
-      (let [config (get-dhconfig-for :dh-h2)]
-        (db/init :datahike config)
-        (is (d/database-exists? (:dh-config config)))
-        (let [conn (db/connect :datahike config)]
-          (is (not (nil? conn)))
-          (db/release :datahike conn))))))
-
+      (testing "Postgres database"
+        (let [config (get-dhconfig-for :dh-psql)]
+          (db/init :datahike config)
+          (is (d/database-exists? (:dh-config config)))
+          (let [conn (db/connect :datahike config)]
+            (is (not (nil? conn)))
+            (db/release :datahike conn))))
+      (testing "Mysql database"
+        (let [config (get-dhconfig-for :dh-mysql)]
+          (db/init :datahike config)
+          (is (d/database-exists? (:dh-config config)))
+          (let [conn (db/connect :datahike config)]
+            (is (not (nil? conn)))
+            (db/release :datahike conn))))
+      (testing "H2 database"
+        (let [config (get-dhconfig-for :dh-h2)]
+          (db/init :datahike config)
+          (is (d/database-exists? (:dh-config config)))
+          (let [conn (db/connect :datahike config)]
+            (is (not (nil? conn)))
+            (db/release :datahike conn))))))
 
 (deftest test-database-reachability
   (testing "Datomic library"

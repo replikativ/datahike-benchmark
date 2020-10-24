@@ -58,8 +58,7 @@
    ["-b" "--only-database DBNAME" "Run benchmarks only for this database (library with backend)"
     :validate [#(contains? implemented-dbs %) (str "Must be one of: " implemented-dbs)]
     :default #{}
-    :assoc-fn (fn [m k v] (assoc m k (conj (get m k) v)))
-    ]
+    :assoc-fn (fn [m k v] (assoc m k (conj (get m k) v)))]
    ["-B" "--except-database DBNAME" "Do not run benchmarks for this database (library with backend)"
     :validate [#(contains? implemented-dbs %) (str "Must be one of: " implemented-dbs)]
     :default #{}
@@ -127,7 +126,6 @@
                (ch/spit plot (c/plot-filename plot-dir subject file-suffix)))))
     (print " saved\n")))
 
-
 (defn parse-multi [only except all]
   (let [included (if (not-empty only) only all)]
     (set (map keyword (difference included except)))))
@@ -145,9 +143,9 @@
                              (filter #(contains? libs-used (:lib %)))
                              (filter #(contains? dbs-used (:db %))))
               ext-options (assoc options
-                            :databases databases
-                            :time-method (if (:use-criterium options) :criterium :simple)
-                            :space-method (if (:use-perf options) :perf :jvm))
+                                 :databases databases
+                                 :time-method (if (:use-criterium options) :criterium :simple)
+                                 :space-method (if (:use-perf options) :perf :jvm))
               functions (parse-multi (:only-function options) (:except-function options) implemented-functions)]
 
           (println "Options used: ")

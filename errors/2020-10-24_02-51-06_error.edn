@@ -1,0 +1,412 @@
+{:error
+ {:via
+  [{:type java.lang.IllegalArgumentException,
+    :message "Can't delete a store with scheme: :jdbc",
+    :at [datahike.store$fn__20081 invokeStatic "store.cljc" 23]}],
+  :trace
+  [[datahike.store$fn__20081 invokeStatic "store.cljc" 23]
+   [datahike.store$fn__20081 invoke "store.cljc" 22]
+   [clojure.lang.MultiFn invoke "MultiFn.java" 229]
+   [datahike.connector$fn__24032 invokeStatic "connector.cljc" 190]
+   [datahike.connector$fn__24032 invoke "connector.cljc" 92]
+   [datahike.connector$fn__23963$G__23956__23968
+    invoke
+    "connector.cljc"
+    86]
+   [datahike.connector$delete_database
+    invokeStatic
+    "connector.cljc"
+    211]
+   [datahike.connector$delete_database invoke "connector.cljc" 205]
+   [datahike_benchmark.db.datahike$eval247$fn__249
+    invoke
+    "datahike.clj"
+    20]
+   [clojure.lang.MultiFn invoke "MultiFn.java" 234]
+   [datahike_benchmark.db.api$init_and_connect
+    invokeStatic
+    "api.clj"
+    32]
+   [datahike_benchmark.db.api$init_and_connect invoke "api.clj" 31]
+   [datahike_benchmark.db.api$prepare_db_and_connect
+    invokeStatic
+    "api.clj"
+    36]
+   [datahike_benchmark.db.api$prepare_db_and_connect
+    invoke
+    "api.clj"
+    35]
+   [datahike_benchmark.db.api$prepare_db invokeStatic "api.clj" 44]
+   [datahike_benchmark.db.api$prepare_db invoke "api.clj" 43]
+   [datahike_benchmark.bench.connection$run_combinations$iter__25115__25121$fn__25122$iter__25117__25123$fn__25124$fn__25125$fn__25127
+    invoke
+    "connection.clj"
+    33]
+   [datahike_benchmark.bench.connection$run_combinations$iter__25115__25121$fn__25122$iter__25117__25123$fn__25124$fn__25125
+    invoke
+    "connection.clj"
+    29]
+   [datahike_benchmark.bench.connection$run_combinations$iter__25115__25121$fn__25122$iter__25117__25123$fn__25124
+    invoke
+    "connection.clj"
+    20]
+   [clojure.lang.LazySeq sval "LazySeq.java" 42]
+   [clojure.lang.LazySeq seq "LazySeq.java" 51]
+   [clojure.lang.RT seq "RT.java" 535]
+   [clojure.core$seq__5402 invokeStatic "core.clj" 137]
+   [clojure.core$seq__5402 invoke "core.clj" 137]
+   [datahike_benchmark.bench.connection$run_combinations$iter__25115__25121$fn__25122
+    invoke
+    "connection.clj"
+    20]
+   [clojure.lang.LazySeq sval "LazySeq.java" 42]
+   [clojure.lang.LazySeq seq "LazySeq.java" 51]
+   [clojure.lang.RT seq "RT.java" 535]
+   [clojure.core$seq__5402 invokeStatic "core.clj" 137]
+   [clojure.core$dorun invokeStatic "core.clj" 3133]
+   [clojure.core$doall invokeStatic "core.clj" 3148]
+   [clojure.core$doall invoke "core.clj" 3148]
+   [datahike_benchmark.bench.connection$run_combinations
+    invokeStatic
+    "connection.clj"
+    20]
+   [datahike_benchmark.bench.connection$run_combinations
+    invoke
+    "connection.clj"
+    9]
+   [datahike_benchmark.bench.connection$fn__25149
+    invokeStatic
+    "connection.clj"
+    60]
+   [datahike_benchmark.bench.connection$fn__25149
+    invoke
+    "connection.clj"
+    52]
+   [clojure.lang.MultiFn invoke "MultiFn.java" 244]
+   [datahike_benchmark.bench.api$bench invokeStatic "api.clj" 18]
+   [datahike_benchmark.bench.api$bench invoke "api.clj" 10]
+   [datahike_benchmark.core$_main$iter__297__301$fn__302
+    invoke
+    "core.clj"
+    160]
+   [clojure.lang.LazySeq sval "LazySeq.java" 42]
+   [clojure.lang.LazySeq seq "LazySeq.java" 51]
+   [clojure.lang.RT seq "RT.java" 535]
+   [clojure.core$seq__5402 invokeStatic "core.clj" 137]
+   [clojure.core$dorun invokeStatic "core.clj" 3133]
+   [clojure.core$doall invokeStatic "core.clj" 3148]
+   [clojure.core$doall invoke "core.clj" 3148]
+   [datahike_benchmark.core$_main invokeStatic "core.clj" 157]
+   [datahike_benchmark.core$_main doInvoke "core.clj" 135]
+   [clojure.lang.RestFn invoke "RestFn.java" 805]
+   [datahike_benchmark.core$eval1728
+    invokeStatic
+    "form-init6658995933944959429.clj"
+    1]
+   [datahike_benchmark.core$eval1728
+    invoke
+    "form-init6658995933944959429.clj"
+    1]
+   [clojure.lang.Compiler eval "Compiler.java" 7177]
+   [clojure.lang.Compiler eval "Compiler.java" 7132]
+   [clojure.core$eval invokeStatic "core.clj" 3214]
+   [clojure.core$eval invoke "core.clj" 3210]
+   [clojure.main$repl$read_eval_print__9086$fn__9089
+    invoke
+    "main.clj"
+    437]
+   [clojure.main$repl$read_eval_print__9086 invoke "main.clj" 437]
+   [clojure.main$repl$fn__9095 invoke "main.clj" 458]
+   [clojure.main$repl invokeStatic "main.clj" 458]
+   [clojure.main$repl doInvoke "main.clj" 368]
+   [clojure.lang.RestFn invoke "RestFn.java" 1523]
+   [nrepl.middleware.interruptible_eval$evaluate
+    invokeStatic
+    "interruptible_eval.clj"
+    79]
+   [nrepl.middleware.interruptible_eval$evaluate
+    invoke
+    "interruptible_eval.clj"
+    55]
+   [nrepl.middleware.interruptible_eval$interruptible_eval$fn__1128$fn__1132
+    invoke
+    "interruptible_eval.clj"
+    142]
+   [clojure.lang.AFn run "AFn.java" 22]
+   [nrepl.middleware.session$session_exec$main_loop__1229$fn__1233
+    invoke
+    "session.clj"
+    171]
+   [nrepl.middleware.session$session_exec$main_loop__1229
+    invoke
+    "session.clj"
+    170]
+   [clojure.lang.AFn run "AFn.java" 22]
+   [java.lang.Thread run "Thread.java" 834]],
+  :cause "Can't delete a store with scheme: :jdbc"},
+ :loop-context
+ {:backend "JDBC MySql (HHT)",
+  :schema-flexibility :read,
+  :keep-history? false,
+  :datoms 0},
+ :cli-options
+ {:tx-datom-count (0 25 50 75 100),
+  :only-database #{},
+  :except-function #{},
+  :plot-dir "./plots",
+  :time-only true,
+  :space-only false,
+  :space-step 5,
+  :not-save-plots false,
+  :except-database #{},
+  :space-method :jvm,
+  :use-criterium false,
+  :crash-on-error true,
+  :not-save-data false,
+  :time-method :simple,
+  :db-datom-count (0 25 50 75 100),
+  :databases
+  ({:lib :datahike,
+    :display-name "In-Memory (HHT)",
+    :db :dh-mem-hht,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-hht_sr_t0"},
+     :index :datahike.index/hitchhiker-tree,
+     :schema-flexibility :read,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "In-Memory (Set)",
+    :db :dh-mem-set,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-ps_sr_t0"},
+     :index :datahike.index/persistent-set,
+     :schema-flexibility :read,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "File-based (HHT)",
+    :db :dh-file,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :file,
+      :path "/tmp/performance-file",
+      :dbname "performance-file_sr_t0"},
+     :schema-flexibility :read,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "LevelDB (HHT)",
+    :db :dh-level,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store {:dbname "_sr_t0"},
+     :schema-flexibility :read,
+     :keep-history? false},
+    :store
+    {:backend :level,
+     :path "/tmp/performance-lvl",
+     :dbname "/tmp/performance-lvl"}}
+   {:lib :datahike,
+    :display-name "JDBC MySql (HHT)",
+    :db :dh-mysql,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :jdbc,
+      :dbtype "mysql",
+      :host "localhost",
+      :port 3306,
+      :user "root",
+      :password "",
+      :dbname "performance_msql_sr_t0"},
+     :schema-flexibility :read,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "In-Memory (HHT)",
+    :db :dh-mem-hht,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-hht_sw_t0"},
+     :index :datahike.index/hitchhiker-tree,
+     :schema-flexibility :write,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "In-Memory (Set)",
+    :db :dh-mem-set,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-ps_sw_t0"},
+     :index :datahike.index/persistent-set,
+     :schema-flexibility :write,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "File-based (HHT)",
+    :db :dh-file,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :file,
+      :path "/tmp/performance-file",
+      :dbname "performance-file_sw_t0"},
+     :schema-flexibility :write,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "LevelDB (HHT)",
+    :db :dh-level,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store {:dbname "_sw_t0"},
+     :schema-flexibility :write,
+     :keep-history? false},
+    :store
+    {:backend :level,
+     :path "/tmp/performance-lvl",
+     :dbname "/tmp/performance-lvl"}}
+   {:lib :datahike,
+    :display-name "JDBC MySql (HHT)",
+    :db :dh-mysql,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :jdbc,
+      :dbtype "mysql",
+      :host "localhost",
+      :port 3306,
+      :user "root",
+      :password "",
+      :dbname "performance_msql_sw_t0"},
+     :schema-flexibility :write,
+     :keep-history? false}}
+   {:lib :datahike,
+    :display-name "In-Memory (HHT)",
+    :db :dh-mem-hht,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-hht_sr_t1"},
+     :index :datahike.index/hitchhiker-tree,
+     :schema-flexibility :read,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "In-Memory (Set)",
+    :db :dh-mem-set,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-ps_sr_t1"},
+     :index :datahike.index/persistent-set,
+     :schema-flexibility :read,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "File-based (HHT)",
+    :db :dh-file,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :file,
+      :path "/tmp/performance-file",
+      :dbname "performance-file_sr_t1"},
+     :schema-flexibility :read,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "LevelDB (HHT)",
+    :db :dh-level,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store {:dbname "_sr_t1"},
+     :schema-flexibility :read,
+     :keep-history? true},
+    :store
+    {:backend :level,
+     :path "/tmp/performance-lvl",
+     :dbname "/tmp/performance-lvl"}}
+   {:lib :datahike,
+    :display-name "JDBC MySql (HHT)",
+    :db :dh-mysql,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :jdbc,
+      :dbtype "mysql",
+      :host "localhost",
+      :port 3306,
+      :user "root",
+      :password "",
+      :dbname "performance_msql_sr_t1"},
+     :schema-flexibility :read,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "In-Memory (HHT)",
+    :db :dh-mem-hht,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-hht_sw_t1"},
+     :index :datahike.index/hitchhiker-tree,
+     :schema-flexibility :write,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "In-Memory (Set)",
+    :db :dh-mem-set,
+    :dh-config
+    {:store {:backend :mem, :dbname "performance-ps_sw_t1"},
+     :index :datahike.index/persistent-set,
+     :schema-flexibility :write,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "File-based (HHT)",
+    :db :dh-file,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :file,
+      :path "/tmp/performance-file",
+      :dbname "performance-file_sw_t1"},
+     :schema-flexibility :write,
+     :keep-history? true}}
+   {:lib :datahike,
+    :display-name "LevelDB (HHT)",
+    :db :dh-level,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store {:dbname "_sw_t1"},
+     :schema-flexibility :write,
+     :keep-history? true},
+    :store
+    {:backend :level,
+     :path "/tmp/performance-lvl",
+     :dbname "/tmp/performance-lvl"}}
+   {:lib :datahike,
+    :display-name "JDBC MySql (HHT)",
+    :db :dh-mysql,
+    :dh-config
+    {:index :datahike.index/hitchhiker-tree,
+     :store
+     {:backend :jdbc,
+      :dbtype "mysql",
+      :host "localhost",
+      :port 3306,
+      :user "root",
+      :password "",
+      :dbname "performance_msql_sw_t1"},
+     :schema-flexibility :write,
+     :keep-history? true}}
+   {:lib :datomic,
+    :display-name "Datomic Mem",
+    :db :dat-mem,
+    :uri "datomic:mem://performance"}
+   {:lib :datomic,
+    :display-name "Datomic Free",
+    :db :dat-free,
+    :uri "datomic:free://localhost:4334/performance?password=clojure"}
+   {:lib :hitchhiker,
+    :display-name " Hitchhiker Tree (Datoms)",
+    :db :hht-dat,
+    :tree-type :datoms}
+   {:lib :hitchhiker,
+    :display-name " Hitchhiker Tree (Values)",
+    :db :hht-val,
+    :tree-type :values}),
+  :seed 1997006535,
+  :time-step 5,
+  :use-perf false,
+  :data-dir "./data",
+  :only-function #{"connection"},
+  :except-lib #{},
+  :iterations {:connection 2, :transaction 2, :query 2},
+  :entity-count :function-specific,
+  :error-dir "./errors",
+  :only-lib #{},
+  :save-to-db nil,
+  :ref-attr-count :function-specific}}

@@ -3,6 +3,7 @@
 
 ;; Convenience functions
 
+
 (defn add-config-type [data-map]
   (cond
     (and (= :read (:schema-flexibility data-map)) (:keep-history? data-map))
@@ -11,11 +12,10 @@
     (and (= :read (:schema-flexibility data-map)) (not (:keep-history? data-map)))
     (assoc data-map :config-type 2)
 
-    (and (= :write (:schema-flexibility data-map)) (:keep-history? data-map) )
+    (and (= :write (:schema-flexibility data-map)) (:keep-history? data-map))
     (assoc data-map :config-type 1)
 
     :else (assoc data-map :config-type 0)))
-
 
 (defn add-label-and-config-type [data-map]
   (let [data-map-with-type (add-config-type data-map)]

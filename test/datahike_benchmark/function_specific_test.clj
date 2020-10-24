@@ -40,7 +40,6 @@
 
     (tear-down-fn [conn tx-data] report)))
 
-
 (deftest test-connection
   (db/prepare-db :datahike test-config [] [])
   (let [f-args         test-config
@@ -55,7 +54,6 @@
         _              (is (not (nil? conn)))]
 
     (tear-down-fn unused-args conn)))
-
 
 (deftest test-connection-release
   (db/prepare-db :datahike test-config [] [])

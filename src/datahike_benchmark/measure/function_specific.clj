@@ -40,6 +40,7 @@
 
 ;; Connection
 
+
 (defmethod get-setup-fn :connection [_ _ _]
   (fn [] nil))
 
@@ -53,6 +54,7 @@
 
 ;; Connection with release
 
+
 (defmethod get-one-time-setup-fn :connection-release [_ _ _]
   (fn [] nil))
 
@@ -64,6 +66,7 @@
 
 
 ;; Transaction
+
 
 (defn prepare-transaction-measurements [{:keys [lib] :as config} schema db-datoms tx-datoms]
   (let [conn (db/prepare-db-and-connect lib config schema db-datoms)]
@@ -86,6 +89,7 @@
 
 
 ;; Query
+
 
 (defmethod get-setup-fn :query [_ _ {:keys [query-gen]}]
   (fn [] (query-gen)))

@@ -30,9 +30,9 @@
     (spit filename
           (with-out-str
             (pprint
-              {:error        (Throwable->map error)
-               :loop-context context
-               :cli-options  options})))
+             {:error        (Throwable->map error)
+              :loop-context context
+              :cli-options  options})))
     (println (str "Full error report saved in " filename))
     filename))
 
@@ -47,6 +47,7 @@
 
 ;; Schema creation
 
+
 (defn make-attr
   ([name type] (make-attr name type :db.cardinality/one))
   ([name type cardinality]
@@ -56,6 +57,7 @@
 
 
 ;; Random data generation
+
 
 (defn data-generator
   ([type seed]
@@ -91,6 +93,7 @@
 
 
 ;; Point series generation
+
 
 (defn linspace [start end point-count]
   (vec (range start

@@ -2,7 +2,6 @@
   (:require [datahike-benchmark.db.interface :as db]
             [datomic.api :as d]))
 
-
 (defmethod db/connect :datomic [_ {:keys [uri]}] (d/connect uri))
 
 (defmethod db/transact :datomic [_ conn tx] (deref (d/transact conn tx)))

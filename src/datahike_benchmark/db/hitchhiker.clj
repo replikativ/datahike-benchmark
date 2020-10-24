@@ -7,6 +7,7 @@
 
 ;; Hitchhiker functions
 
+
 (def ^:const br 300)                                        ;; same as in datahike
 (def ^:const br-sqrt (long (Math/sqrt br)))                 ;; same as in datahike
 
@@ -20,10 +21,10 @@
 
 (defn insert-many [tree values]
   (async/<??
-    (async/reduce<
-      (fn [tree val] (msg/insert tree val nil))
-      tree
-      values)))
+   (async/reduce<
+    (fn [tree val] (msg/insert tree val nil))
+    tree
+    values)))
 
 (defn entities->datoms [entities]
   (apply concat (map #(map (fn [[k v]] (vector 0 k v :db/add)) %) entities)))
@@ -38,6 +39,7 @@
 
 
 ;; Multimethods
+
 
 (defmethod db/connect :hitchhiker [_ {:keys [tree-type]}]
   {:tree   (get @memory tree-type)

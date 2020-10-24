@@ -1,6 +1,5 @@
 (ns datahike-benchmark.db.interface)
 
-
 (defmulti connect (fn [lib _] lib))
 
 (defmulti transact (fn [lib _ _] lib))
