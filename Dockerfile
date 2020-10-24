@@ -17,6 +17,10 @@ CMD rm "/tmp/signals/benchmarks-finished" \
     && echo "Signal for finished benchmark creation sent" \
     && echo "Finished benchmarking at $(date)";
 
-# (-main "-e" "-p" "./plots" "-m" "./errors" "-b" "dh-mem-hht" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "connection")
+# (-main "-e" "-b" "dh-mem-hht" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "connection")
 
-# (-main "-e" "-p" "./plots" "-m" "./errors" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "connection")
+# (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "connection")
+# (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "transaction")
+# (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25" "-f" "query")
+
+# (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25")

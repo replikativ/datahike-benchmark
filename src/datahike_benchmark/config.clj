@@ -11,7 +11,7 @@
 
 (def default-plot-dir "./plots")
 (def default-data-dir "./data")
-(def default-error-dir "/tmp/datahike-benchmark-errors")
+(def default-error-dir "./errors")
 
 (def date-format "yyyy-MM-dd_HH-mm-ss")
 
@@ -35,8 +35,8 @@
 
 ;; Benchmark uris
 
-(def default-schema-flexibility :read)
-(def default-keep-history? true)
+(def default-schema-flexibility :write)
+(def default-keep-history? false)
 
 (def datahike-base-configs
   (let [common-info   {:lib :datahike}
@@ -56,7 +56,7 @@
                                        :store {:backend :file
                                                :path "/tmp/performance-file"
                                                :dbname  "performance-file"}}}
-                       #_{:display-name "LevelDB (HHT)"
+                       {:display-name "LevelDB (HHT)"
                         :db           :dh-level
                         :dh-config    {:index :datahike.index/hitchhiker-tree}
                                        :store {:backend :level :path "/tmp/performance-lvl" :dbname "/tmp/performance-lvl"}}
