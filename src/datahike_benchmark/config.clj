@@ -1,4 +1,5 @@
 (ns datahike-benchmark.config
+  (:require [datomic.client.api :as c])
   (:import (java.util Date)
            (java.text SimpleDateFormat)))
 
@@ -60,13 +61,13 @@
                                        :store {:backend :file
                                                :path "/tmp/performance-file"
                                                :dbname  "performance-file"}}}
-                       {:display-name "LevelDB (HHT)"
+                       #_{:display-name "LevelDB (HHT)"
                         :db           :dh-level
                         :dh-config    {:index :datahike.index/hitchhiker-tree}
                         :store {:backend :level
                                 :path "/tmp/performance-lvl"
                                 :dbname "performance-lvl"}}
-                       #_{:display-name "JDBC Postgres (HHT)"
+                       {:display-name "JDBC Postgres (HHT)"
                           :db           :dh-psql
                           :dh-config    {:index :datahike.index/hitchhiker-tree
                                          :store {:backend  :jdbc
@@ -76,22 +77,22 @@
                                                  :user     "datahike"
                                                  :password "clojure"
                                                  :dbname   "performance_psql"}}}
-                       #_{:display-name "JDBC MySql (HHT)"
+                       {:display-name "JDBC MySql (HHT)"
                           :db           :dh-mysql
                           :dh-config    {:index :datahike.index/hitchhiker-tree
                                          :store {:backend  :jdbc
                                                  :dbtype   "mysql"
                                                  :host     "localhost"
                                                  :port     3306
-                                                 :user     "root"
-                                                 :password ""
+                                                 :user     "datahike"
+                                                 :password "clojure"
                                                  :dbname   "performance_msql"}}}
-                       #_{:display-name "JDBC H2 (HHT)"
+                       {:display-name "JDBC H2 (HHT)"
                           :db           :dh-h2
                           :dh-config    {:index :datahike.index/hitchhiker-tree
                                          :store {:backend :jdbc
-                                                 :dbtype  "h2:mem"
-                                                 :dbname  "performance-h2"}}}]]
+                                                 :dbtype  "h2"
+                                                 :dbname  "/tmp/performance-h2"}}}]]
     (vec (for [info specific-info]
            (merge common-info info)))))
 
@@ -110,10 +111,17 @@
                        :display-name "Datomic Mem"
                        :db           :dat-mem
                        :uri          "datomic:mem://performance"} ;; not working on connect
-                      {:lib          :datomic
+                      #_{:lib          :datomic             ;; connection issues, datomic trying to use different port than declared
                        :display-name "Datomic Free"
                        :db           :dat-free
-                       :uri          "datomic:free://localhost:4334/performance?password=clojure"}])
+                       :uri          "datomic:free://localhost:4334/performance?password=clojure"}
+                      {:lib :datomic-client
+                       :display-name "Datomic Dev"
+                       :db           :dat-dev
+                       :client (c/client {:server-type :dev-local
+                                          :storage-dir "/tmp/performance-datomic"
+                                          :system "dev"})
+                       :dat-config {:db-name "performance-datomic"}}])
 
 (def hitchhiker-configs [{:lib          :hitchhiker
                           :display-name " Hitchhiker Tree (Datoms)"

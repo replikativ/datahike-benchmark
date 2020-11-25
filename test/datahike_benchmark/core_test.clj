@@ -22,7 +22,7 @@
     (testing "Persistent set index"
       (let [config (get-dhconfig-for :dh-mem-set)]
         (db/init :datahike config)
-        (is (d/database-exists? config))
+        (is (d/database-exists? (:dh-config config)))
         (let [conn (db/connect :datahike config)]
           (is (not (nil? conn)))
           (db/release :datahike conn)))))
@@ -43,7 +43,7 @@
           (is (not (nil? conn)))
           (db/release :datahike conn))))
 
-  #_(testing "JDBC backend (:jdbc)"
+  (testing "JDBC backend (:jdbc)"
       (testing "Postgres database"
         (let [config (get-dhconfig-for :dh-psql)]
           (db/init :datahike config)
@@ -51,7 +51,7 @@
           (let [conn (db/connect :datahike config)]
             (is (not (nil? conn)))
             (db/release :datahike conn))))
-      (testing "Mysql database"
+     (testing "Mysql database"
         (let [config (get-dhconfig-for :dh-mysql)]
           (db/init :datahike config)
           (is (d/database-exists? (:dh-config config)))
@@ -74,12 +74,18 @@
         (let [conn (db/connect :datomic config)]
           (is (not (nil? conn)))
           (db/release :datomic conn))))
-    (testing "Datomic free"
+    #_(testing "Datomic free"
       (let [config (get-config-for :dat-free)]
         (db/init :datomic config)
         (let [conn (db/connect :datomic config)]
           (is (not (nil? conn)))
-          (db/release :datomic conn)))))
+          (db/release :datomic conn))))
+    (testing "Datomic Dev"
+             (let [config (get-config-for :dat-dev)]
+               (db/init :datomic-client config)
+               (let [conn (db/connect :datomic-client config)]
+                 (is (not (nil? conn)))
+                 (db/release :datomic-client conn)))))
 
   (testing "Hitchhiker-tree"
     (testing "Raw values as entries"

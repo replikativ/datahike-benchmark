@@ -14,7 +14,6 @@
         datom-counts (if (= :function-specific db-datom-count)
                        (u/int-linspace 0 5000 21)           ;; for 8192 memory exception
                        db-datom-count)
-        _ (println "dc" datom-counts)
 
         res          (doall (for [db-datoms datom-counts
                                   {:keys [lib display-name] :as config} configs
@@ -24,7 +23,7 @@
                                         context            {:backend            display-name
                                                             :schema-flexibility schema-flexibility
                                                             :keep-history?      keep-history?
-                                                            :datoms             db-datoms}]]
+                                                            :datoms             (long db-datoms)}]]
                               (try
                                 (println " CONNECT - Number of datoms in db:" db-datoms)
                                 (println "           Config:" config)
