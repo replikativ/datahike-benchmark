@@ -89,17 +89,17 @@
    (println " Number of entities:" e)
    (time
     (let [shuffle-fn    (u/shuffle-generator seed)
-          schema        (into [(u/make-attr :randomEntity :db.type/boolean)]
+          schema        (into [(u/make-attr :randEnt :db.type/boolean)]
                               (concat (make-hom-schema "A" type :db.cardinality/one n)
                                       (make-hom-schema "R" :db.type/ref :db.cardinality/one n)))
           entities      (mapv (fn [_]
-                                (make-entity {:randomEntity true} "A" m n
+                                (make-entity {:randEnt true} "A" m n
                                              (repeatedly m (u/data-generator type seed))
                                              shuffle-fn))
                               (range e))
           conn          (db/prepare-db-and-connect lib config schema entities)
           ids           (map first (db/q lib
-                                         '[:find ?e :where [?e :randomEntity]]
+                                         '[:find ?e :where [?e :randEnt]]
                                          (db/db lib conn)))
           add-to-entity (mapv (fn [id] (make-entity {:db/id id} "R" m n
                                                     (take m (shuffle-fn (remove #{id} ids)))

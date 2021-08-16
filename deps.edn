@@ -1,0 +1,51 @@
+{:deps {org.clojars.den/datalevin {:mvn/version "0.4.29"}
+        org.clojure/clojure {:mvn/version "1.10.2-alpha1"}
+        org.clojure/data.csv {:mvn/version "1.0.0"}
+        io.replikativ/hitchhiker-tree {:mvn/version "0.1.11"}
+        io.replikativ/datahike {:mvn/version "0.3.6"}
+        io.replikativ/datahike-jdbc {:mvn/version "0.1.2-SNAPSHOT"} ;; currently only working for h2 databases
+        ; io.replikativ/datahike-leveldb {:mvn/version "0.1.0"} ;; outdated
+
+        com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}
+        com.datomic/datomic-free {:mvn/version "0.9.5697"}
+        com.datomic/dev-local {:mvn/version "0.9.225"}
+
+        com.hypirion/clj-xchart {:mvn/version "0.2.0"}
+        criterium/criterium {:mvn/version "0.4.6"}
+        datascript/datascript {:mvn/version "1.2.5"}
+        org.clojure/tools.cli {:mvn/version "1.0.194"}}
+
+ :paths ["src" "target/classes"]
+
+ :aliases {:run {:main-opts ["-m" "datahike-benchmark.core"]
+                 :jvm-opts ["-Xmx2g"                                       ;; max 2GB Heap size, default usually 1GB
+                            "-server"                                      ;; faster operating speed, vs. '-client': smaller memory footprint and faster startup time
+                            "-Djdk.attach.allowAttachSelf=true"            ;; allow clj-async profiling
+                            "-XX:+UnlockDiagnosticVMOptions"               ;; make profiling more accurate
+                            "-XX:+DebugNonSafepoints"]}                    ;; see above
+
+           :dev {:extra-paths ["test"]
+                 :extra-deps {org.clojure/tools.namespace {:mvn/version "0.2.11"}
+                              cider/cider-nrepl {:mvn/version "0.19.0"}
+                              nrepl/nrepl {:mvn/version "0.5.3"}}}
+
+           :test {:extra-paths ["test"]
+                  :extra-deps {org.clojure/tools.cli       {:mvn/version "1.0.194"}
+                               lambdaisland/kaocha {:mvn/version "1.0.732"}}
+                  :main-opts ["-m" "kaocha.runner"]
+                  :jvm-opts ["-Xmx2g"                                       ;; max 2GB Heap size, default usually 1GB
+                             "-server"                                      ;; faster operating speed, vs. '-client': smaller memory footprint and faster startup time
+                             "-Djdk.attach.allowAttachSelf=true"            ;; allow clj-async profiling
+                             "-XX:+UnlockDiagnosticVMOptions"               ;; make profiling more accurate
+                             "-XX:+DebugNonSafepoints"]}                    ;; see above
+
+           :repl {:extra-deps {cider/cider-nrepl {:mvn/version "0.19.0"}
+                               nrepl/nrepl {:mvn/version "0.5.3"}
+                               org.clojure/tools.namespace {:mvn/version "0.2.11"}}
+                  :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+
+           :format {:extra-deps {cljfmt/cljfmt {:mvn/version "0.7.0"}}
+                    :main-opts ["-m" "cljfmt.main" "check"]}
+
+           :ffix {:extra-deps {cljfmt/cljfmt {:mvn/version "0.7.0"}}
+                  :main-opts ["-m" "cljfmt.main" "fix"]}}}

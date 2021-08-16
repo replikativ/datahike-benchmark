@@ -159,6 +159,17 @@
                            (save function :time options)))
                      (when (not (:time-only options))
                        (-> (b/bench function :space (:space-method ext-options) ext-options)
-                           (save function :space options))))))))))
-  (println "Benchmarking has finished successfully")
+                           (save function :space options))))))
+          (println "Benchmarking has finished successfully")))))
   (shutdown-agents))
+
+
+(comment
+
+  (-main "-e" "-b" "dh-mem" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1")
+  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "connection")
+  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "transaction")
+  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "random-query")
+  
+  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25")
+  )

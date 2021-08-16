@@ -45,24 +45,12 @@
   (->> (read-csv filename)
        (mapv add-label-and-config-type)))
 
-(defn wait-connect [uri]
-  (println "Uri: " uri)
-  (loop [conn (try (d/connect uri)
-                   (catch Exception _ nil))]
-    (if (nil? conn)
-      (do (println "Database not found. Waiting for 5 minutes...")
-          (Thread/sleep 300000)                                ;; 5 min
-          (recur (try (d/connect uri)
-                      (catch Exception _ nil))))
-      conn)))
-
 (defn get-data [function resource]
   (let [query '[:find  ?e ?a ?v
                 :in $ ?function ?resource
                 :where [?e ?a ?v]
                 [?e :resource ?resource]
                       [?e :function ?function]]
-        ;; conn (wait-connect "datahike:file://tmp/output-db")
         conn (d/connect "datahike:file:///tmp/output-db")
         ]
     (->> (d/q query @conn function resource)

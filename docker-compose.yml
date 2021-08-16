@@ -23,9 +23,9 @@ services:
       - MYSQL_ONETIME_PASSWORD=clojure
 
   datomic:
-    image: akiel/datomic-free:0.9.5703-3
+    image: akiel/datomic-free:0.9.5703-2
     ports:
-      - "4334"
+      - "4334-4336:4334-4336"
     environment:
       - ADMIN_PASSWORD=clojure
       - DATOMIC_PASSWORD=clojure
@@ -34,7 +34,6 @@ services:
     build: .
     ports:
       - "5000"
-    network_mode: "host"
     depends_on:
       - postgres
       - mysql
@@ -44,6 +43,10 @@ services:
       - plots:/tmp/plots
       - errors:/tmp/errors
       - signals:/tmp/signals
+    links:
+      - postgres
+      - mysql
+      - datomic
 
   results:
     build: ./result-presentation

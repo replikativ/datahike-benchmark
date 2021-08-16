@@ -11,3 +11,7 @@
 (defmulti q (fn [lib _ _] lib))
 
 (defmulti init (fn [lib _] lib))
+
+(defmulti prepare-and-connect (fn [lib _ _ _] lib))
+
+(defmulti delete (fn [lib _] lib))

@@ -3,7 +3,6 @@
             [datahike-benchmark.bench.set-query :as s]
             [datahike-benchmark.db.api :as db]
             [datahike.api :as d]
-            [datahike.datom :as dhd]
             [datahike-benchmark.measure.function-specific :as f]))
 
 (def test-config {:display-name "In-Memory (HHT)"
@@ -49,6 +48,7 @@
         tear-down-fn   (f/get-tear-down-fn :connection :datahike f-args)
 
         unused-args    (setup-function)
+        _              (is (nil? unused-args))
 
         conn           (fn-to-measure unused-args)
         _              (is (not (nil? conn)))]
@@ -64,8 +64,10 @@
         tear-down-fn   (f/get-one-time-tear-down-fn :connection-release :datahike f-args)
 
         unused-args    (setup-function)
+        _              (is (nil? unused-args))
 
-        _              (fn-to-measure unused-args)]
+        result         (fn-to-measure unused-args)
+        _              (is (nil? result))]
 
     (tear-down-fn unused-args)))
 
@@ -88,7 +90,8 @@
         query          (setup-function)
         _              (is (= query test-query))
 
-        unused-args    (fn-to-measure query)]
+        result         (fn-to-measure query)
+        _              (is (= '([1]) result))]
 
-    (tear-down-fn query unused-args)))
+    (tear-down-fn query result)))
 

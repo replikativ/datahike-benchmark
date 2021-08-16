@@ -5,8 +5,6 @@
 
 (defn data [resource]
   (->> (get-data "connection" resource)
-       ;;(get-data "connection.csv")
-       ;;  (map #(assoc % :sd 200 :sd2 -100))
        (map #(select-keys % [:datoms :mean :config :backend :sd]))
        (filter #(not (= (:backend %) "Datomic Free")))
        vec))

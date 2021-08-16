@@ -6,8 +6,6 @@
 
 (defn data [resource]
   (->> (get-data "transaction" resource)
-    ;;(get-data "transaction.csv")
-       ;;  (map #(assoc % :sd 1000 :sd2 -200))
        (map #(select-keys % [:datoms :mean :config :db-size :backend :sd :sd2]))
        (map #(rename-keys % {:db-size :dbsize}))
        vec))

@@ -5,7 +5,7 @@
             [clj-async-profiler.core :as prof]
             [criterium.core :as cr]
             [clojure.string :as str])
-  (:import (java.io StringWriter File)))
+  (:import (java.io File)))
 
 
 ;;
@@ -70,7 +70,7 @@
         args (one-time-setup-fn)
         stats (cr/benchmark (fn-to-measure args) {:verbose false})]
     (one-time-tear-down-fn args)
-    stats))
+    (update stats :mean first)))
 
 
 ;; Measure space using Java Runtime methods
@@ -116,7 +116,7 @@
       (return-map s))))
 
 (defn profile-space [space-step iterations fn-to-measure args]
-  (let [file (try (prof/profile
+  (let [file (try (prof/profile ;; should be file object
                    {:event       :alloc
                     :interval    space-step
                     :generate-flamegraph? false
@@ -126,14 +126,17 @@
                               (fn-to-measure args)
                               (catch Exception e (throw (error e :space i)))
                               (catch AssertionError e (throw (error e :space i)))))))
+                  (catch java.lang.reflect.InvocationTargetException e
+                    (println "cause" (.getCause e))
+                    (throw (error e :space :general)))
                   (catch Exception e (if (clojure.string/includes? (.getMessage e) "No stack counts found")
                                        (println "Warning:" (.getMessage e))
                                        (throw e))))
+        
         data (if (nil? file)
                []
-               (let [txt-name (.getAbsolutePath ^File file)]
-                 (mapv #(clojure.string/split % #" ")
-                       (clojure.string/split-lines (slurp txt-name)))))]
+               (mapv #(clojure.string/split % #" ")
+                     (clojure.string/split-lines (slurp file))))]
     data))
 
 (defmethod measure [:space :perf]

@@ -81,7 +81,7 @@ The indication 'multi value' indicated that this argument can be used multiple t
 RANGE must be given as triple of integers 'start stop step' which are given as input for range function.
 Example: 
 ``` bash
-lein run --db-datom-count "0 101 25" # (range 0 101 25) -> [0 25 50 75 100]
+clj --db-datom-count "0 101 25" # (range 0 101 25) -> [0 25 50 75 100]
 ```
 
 ITERATIONS must be given as string of space-separated integers of 
@@ -91,7 +91,7 @@ ITERATIONS must be given as string of space-separated integers of
   
 Example: 
 ``` bash
-lein run --iterations "1 50 10" #  {:iterations {:connection 1, :transaction 50, :query 10}}
+clj --iterations "1 50 10" #  {:iterations {:connection 1, :transaction 50, :query 10}}
 ```
 
 FUNCTION can be one of: 
@@ -101,6 +101,8 @@ FUNCTION can be one of:
 
 LIB can be one of: 
 - datahike 
+- datalevin
+- datascript
 - datomic 
 - hitchhiker
 
@@ -115,17 +117,29 @@ DBNAME can be one of:
  | dh-h2      | datahike with H2 in-memory and hitchhiker-tree index |
  | dh-level   | datahike with LevelDB and hitchhiker-tree index      |
  | dat-mem    | datomic in-memory                                    |
- | dat-free   | datomic free                                         |
- | hht-dat    | hitchhiker-tree direct using raw values              |
- | hht-val    | hitchhiker-tree direct using datoms                  |
+ | dat-dev    | datomic dev client                                   |
+ | hht-dat    | hitchhiker-tree directly using raw values            |
+ | hht-val    | hitchhiker-tree directly using datoms                |
+ | datascript | datascript                                           |
+ | datalevin  | datalevin                                            |
 
 You can see the results as csv files in `./data` and as charts in `./plots`.
+
+## Starting Full Run With Report creation
+
+For full run renew volumes to get rid of old data, recreate the images and run docker-compose:
+
+``` bash
+cd bin
+./recreate-docker-volumes.sh
+docker-compose up --build --force-recreate
+```
 
 ## Reproducing Errors
 
 If an error occurs for a parameter configuration, on default the computations will not be stopped but skip the troubling configuration and create an error log.
 The part of the computation where the error occurred can then be run again by using the exact options from the error log.
-Most importantly, the seed has to be set like stated in the error log. Then, the data for testing will be exactly the same as in the faulty run, and therefore, you should be able to reproduce the error.
+Most importantly, the seed has to be set like stated in the error log. Then, the data for testing will be exactly the same as in the faulty run so that you should be able to reproduce the error.
 
 
 ## Measuring Restrictions
@@ -151,7 +165,7 @@ Two errors occur occasionally when running the benchmarks:
    If this error occurs, you can disable this backend by running 
    
    ``` bash
-   lein run --except-database dh-level
+   clj --except-database dh-level
    ```
 
 

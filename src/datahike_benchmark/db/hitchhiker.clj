@@ -13,27 +13,27 @@
 
 (def memory (atom {}))
 
-(defn create-tree [type]
-  (swap! memory assoc type (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
+(defn create-tree [data-type]
+  (swap! memory assoc data-type (async/<?? (tree/b-tree (tree/->Config br-sqrt br (- br br-sqrt))))))
 
-(defn delete-tree [type]
-  (swap! memory dissoc type))
+(defn delete-tree [data-type]
+  (swap! memory dissoc data-type))
 
-(defn insert-many [tree values]
+(defn insert-many [tree values op-count]
   (async/<??
    (async/reduce<
-    (fn [tree val] (msg/insert tree val nil))
+    (fn [tree val] (msg/insert tree val nil op-count))
     tree
     values)))
 
-(defn entities->datoms [entities]
-  (apply concat (map #(map (fn [[k v]] (vector 0 k v :db/add)) %) entities)))
+(defn entities->datoms [entities] ;; [e a v t added?] format
+  (apply concat (map #(map (fn [[k v]] (vector 0 k v 0 true)) %) entities)))
 
 (defn entities->values [entities]
   (apply concat (map #(map second %) entities)))
 
-(defn entities->nodes [conn entities]
-  (if (= (:type conn) :values)
+(defn entities->nodes [data-type entities]
+  (if (= data-type :values)
     (entities->values entities)
     (entities->datoms entities)))
 
@@ -41,19 +41,29 @@
 ;; Multimethods
 
 
-(defmethod db/connect :hitchhiker [_ {:keys [tree-type]}]
-  {:tree   (get @memory tree-type)
-   :type tree-type})
+(defmethod db/connect :hitchhiker [_ {:keys [data-type]}]
+  {:tree (get @memory data-type)
+   :op-count 0
+   :type data-type})
 
 (defmethod db/release :hitchhiker [_ _] nil)
 
-(defmethod db/transact :hitchhiker [_ conn tx]
-  (let [new-tree (insert-many (:tree conn) (entities->nodes conn tx))]
-    (assoc conn :tree new-tree)))
+(defmethod db/transact :hitchhiker [_ {:keys [tree type op-count]} tx]
+  (let [vals (entities->nodes type tx)
+        new-tree (insert-many tree vals op-count)]
+    {:tree (get (swap! memory assoc type new-tree) type)
+     :op-count (+ op-count (count vals))
+     :type type}))
 
-(defmethod db/init :hitchhiker [_ {:keys [tree-type]}]
-  (delete-tree tree-type)
-  (create-tree tree-type))
+(defmethod db/init :hitchhiker [_ _] nil)
 
+(defmethod db/prepare-and-connect :hitchhiker [lib {:as config :keys [data-type]} _schema tx]
+  (delete-tree data-type)
+  (create-tree data-type)
+  (let [conn (db/connect lib config)]
+    (db/transact lib conn tx)))
+
+(defmethod db/delete :hitchhiker  [_ {:keys [tree-type]}]
+  (delete-tree tree-type))
 
 
