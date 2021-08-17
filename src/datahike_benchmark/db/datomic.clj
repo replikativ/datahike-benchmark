@@ -37,7 +37,7 @@
 
 (defmethod db/db :datomic-client [_ conn] (c/db conn))
 
-(defmethod db/q :datomic-client [_ query db] (println query)(c/q query db))
+(defmethod db/q :datomic-client [_ query db] (println query) (c/q query db))
 
 (defmethod db/init :datomic-client [_ {:keys [client dat-config]}]
   (c/delete-database client dat-config)
@@ -53,3 +53,27 @@
 
 (defmethod db/delete :datomic-client [_ {:keys [client dat-config]}]
   (c/delete-database client dat-config))
+
+(defmethod db/configs :datomic-client [_]
+  [{:lib          :datomic
+    :display-name "Datomic Mem"
+    :db           :dat-mem
+    :uri          "datomic:mem://performance"} ;; not working on connect
+   {:lib          :datomic             ;; connection issues, datomic trying to use different port than declared
+    :display-name "Datomic Free"
+    :db           :dat-free
+    :uri          "datomic:free://localhost:4334/performance?password=clojure"}
+   {:lib :datomic-client
+    :display-name "Datomic Dev"
+    :db           :dat-dev
+    :client (c/client {:server-type :dev-local
+                       :storage-dir "/tmp/performance-datomic"
+                       :system "dev"})
+    :dat-config {:db-name "performance-datomic"}}
+   {:lib :datomic-client
+    :display-name "Datomic Dev Mem"
+    :db           :dat-dev-mem
+    :client (c/client {:server-type :dev-local
+                       :storage-dir :mem
+                       :system "ci"})
+    :dat-config {:db-name "performance-datomic"}}])

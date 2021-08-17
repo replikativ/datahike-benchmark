@@ -31,3 +31,9 @@
 
 (defmethod db/delete :datalevin  [_ {:keys [path]}]
    (u/delete-files path))
+
+(defmethod db/configs :datalevin [_]
+  [{:lib          :datalevin
+    :display-name "Datalevin"
+    :db           :datalevin
+    :path         "/tmp/performance-datalevin"}])

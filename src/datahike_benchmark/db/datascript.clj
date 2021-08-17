@@ -30,3 +30,8 @@
 
 (defmethod db/delete :datascript  [_ _config]
   nil)
+
+(defmethod db/configs :datascript [_]
+  [{:lib          :datascript
+    :display-name "Datascript"
+    :db           :datascript}])

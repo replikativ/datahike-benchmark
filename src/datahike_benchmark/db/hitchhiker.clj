@@ -66,4 +66,12 @@
 (defmethod db/delete :hitchhiker  [_ {:keys [tree-type]}]
   (delete-tree tree-type))
 
-
+(defmethod db/configs :hitchhiker [_]
+  [{:lib          :hitchhiker
+    :display-name " Hitchhiker Tree (Datoms)"
+    :db           :hht-dat
+    :tree-type    :datoms}
+   {:lib          :hitchhiker
+    :display-name " Hitchhiker Tree (Values)"
+    :db           :hht-val
+    :tree-type    :values}])

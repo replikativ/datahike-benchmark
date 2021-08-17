@@ -1,11 +1,10 @@
 (ns datahike-benchmark.measure.api
   (:require [datahike-benchmark.measure.function-specific :as f]
             [datahike-benchmark.measure.util :as u]
-            [datahike-benchmark.config :as c]
+            [datahike-benchmark.db.api :as db]
             [clj-async-profiler.core :as prof]
             [criterium.core :as cr]
-            [clojure.string :as str])
-  (:import (java.io File)))
+            [clojure.string :as str]))
 
 
 ;;
@@ -148,7 +147,7 @@
         args (one-time-setup-fn)
         data (profile-space space-step iterations fn-to-measure args)
         relevant-data (filter (fn [line] (map (fn [lib] clojure.string/includes? (first line) (name lib))
-                                              c/libs))
+                                              db/libs))
                               data)
         sample-counts (remove nil?
                               (map #(try (->> (filter (fn [x] (> (count x) 0)) %)

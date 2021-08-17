@@ -5,4 +5,5 @@
    [datahike-benchmark.plots.transaction]
    [datahike-benchmark.plots.random-query]))
 
-(defn create-plots [subject data resource] (p/create-plots subject data resource))
+(def ^{:arglists '([subject data resource])} create-plots
+  p/create-plots)

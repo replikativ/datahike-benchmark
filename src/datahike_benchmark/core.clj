@@ -2,6 +2,7 @@
   (:require [clojure.tools.cli :as cli]
             [datahike-benchmark.bench.api :as b]
             [datahike-benchmark.plots.api :as p]
+            [datahike-benchmark.db.api :as db]
             [datahike-benchmark.config :as c]
             [datahike-benchmark.util :as u]
             [com.hypirion.clj-xchart :as ch]
@@ -11,11 +12,9 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(def implemented-libs (set (map (comp name :lib) c/db-configurations)))
-(def implemented-dbs (set (map (comp name :db) c/db-configurations)))
-(def implemented-functions #{"connection" "transaction" "random-query"
-                             ;;"set-query"
-                             })
+(def implemented-libs (set (map name db/libs)))
+(def implemented-dbs (set (map name db/dbs)))
+(def implemented-functions (set (map name b/functions)))
 
 ;; Documentation unclear about versions
 ;; :multi not recognized and :update-fn not working even in version 1.0.194 of tools.cli

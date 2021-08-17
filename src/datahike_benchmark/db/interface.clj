@@ -15,3 +15,5 @@
 (defmulti prepare-and-connect (fn [lib _ _ _] lib))
 
 (defmulti delete (fn [lib _] lib))
+
+(defmulti configs (fn [lib] lib))

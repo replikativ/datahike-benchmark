@@ -4,7 +4,7 @@
         io.replikativ/hitchhiker-tree {:mvn/version "0.1.11"}
         io.replikativ/datahike {:mvn/version "0.3.6"}
         io.replikativ/datahike-jdbc {:mvn/version "0.1.2-SNAPSHOT"} ;; currently only working for h2 databases
-        ; io.replikativ/datahike-leveldb {:mvn/version "0.1.0"} ;; outdated
+        ;io.replikativ/datahike-leveldb {:mvn/version "0.1.0"} ;; outdated
 
         com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}
         com.datomic/datomic-free {:mvn/version "0.9.5697"}
