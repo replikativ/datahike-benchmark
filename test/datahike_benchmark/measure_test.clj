@@ -1,11 +1,12 @@
 (ns datahike-benchmark.measure-test
   (:require [clojure.test :refer [is deftest testing]]
+            [datahike-benchmark.db.api :as db]
             [datahike-benchmark.config :as c]
             [datahike-benchmark.bench.util :as u]
             [datahike-benchmark.measure.api :as m]))
 
 (deftest test-measurement-methods
-  (let [config       (first c/datahike-configs)
+  (let [config       (first (db/configs :datahike))
         n-db-datoms  20
         n-tx-datoms  20
         db-datom-gen (u/tx-generator :name :db.type/string n-db-datoms 0)
