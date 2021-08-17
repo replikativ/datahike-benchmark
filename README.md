@@ -43,7 +43,7 @@ If there are still problems occurring, please check the [profiler Github page](h
 ## Commandline Tool Usage 
 
 ``` bash
-lein run [options]... 
+clj -M:run [options] 
 ```
 
 Options:
@@ -81,7 +81,7 @@ The indication 'multi value' indicated that this argument can be used multiple t
 RANGE must be given as triple of integers 'start stop step' which are given as input for range function.
 Example: 
 ``` bash
-clj --db-datom-count "0 101 25" # (range 0 101 25) -> [0 25 50 75 100]
+clj -M:run --db-datom-count "0 101 25" # (range 0 101 25) -> [0 25 50 75 100]
 ```
 
 ITERATIONS must be given as string of space-separated integers of 
@@ -91,7 +91,7 @@ ITERATIONS must be given as string of space-separated integers of
   
 Example: 
 ``` bash
-clj --iterations "1 50 10" #  {:iterations {:connection 1, :transaction 50, :query 10}}
+clj -M:run  --iterations "1 50 10" #  {:iterations {:connection 1, :transaction 50, :query 10}}
 ```
 
 FUNCTION can be one of: 
@@ -107,21 +107,22 @@ LIB can be one of:
 - hitchhiker
 
 DBNAME can be one of:
- | id         | description                                          |
- |------------|------------------------------------------------------|
- | dh-mem-hht | datahike in-memory with hitchhiker-tree index        | 
- | dh-mem-set | datahike in-memory with persistent set index         |
- | dh-file    | datahike with file backend and hitchhiker-tree index |
- | dh-psql    | datahike with Postgres and hitchhiker-tree index     |
- | dh-mysql   | datahike with MySQL and hitchhiker-tree index        |
- | dh-h2      | datahike with H2 in-memory and hitchhiker-tree index |
- | dh-level   | datahike with LevelDB and hitchhiker-tree index      |
- | dat-mem    | datomic in-memory                                    |
- | dat-dev    | datomic dev client                                   |
- | hht-dat    | hitchhiker-tree directly using raw values            |
- | hht-val    | hitchhiker-tree directly using datoms                |
- | datascript | datascript                                           |
- | datalevin  | datalevin                                            |
+ | id          | description                                          |
+ |-------------|------------------------------------------------------|
+ | dh-mem-hht  | datahike in-memory with hitchhiker-tree index        | 
+ | dh-mem-set  | datahike in-memory with persistent set index         |
+ | dh-file     | datahike with file backend and hitchhiker-tree index |
+ | dh-psql     | datahike with Postgres and hitchhiker-tree index     |
+ | dh-mysql    | datahike with MySQL and hitchhiker-tree index        |
+ | dh-h2       | datahike with H2 in-memory and hitchhiker-tree index |
+ | dh-level    | datahike with LevelDB and hitchhiker-tree index      |
+ | dat-mem     | datomic in-memory                                    |
+ | dat-dev     | datomic dev client                                   |
+ | dat-dev-mem | datomic dev client in-memory database                |
+ | hht-dat     | hitchhiker-tree directly using raw values            |
+ | hht-val     | hitchhiker-tree directly using datoms                |
+ | datascript  | datascript                                           |
+ | datalevin   | datalevin                                            |
 
 You can see the results as csv files in `./data` and as charts in `./plots`.
 
@@ -145,29 +146,10 @@ Most importantly, the seed has to be set like stated in the error log. Then, the
 ## Measuring Restrictions
 
 connection
-- "Datomic Mem" cannot be measured since reconnection after db/release is not possible. Therefore, connection on different db sizes cannot be compared
+- The database *dat-mem* cannot be measured since reconnection after *db/release* is not possible. Therefore, connection on different database sizes cannot be compared.
 
 random-query
-- "Datomic Mem" and "Datomic Free" cannot be measured
-   - reason: java.lang.IllegalStateException: :db.error/connection-released The connection has been released.
-- "LevelDB" cannot be measured since IOError occurs, saying "lock already held by different process" 
-
-## Known Problems
-
-Two errors occur occasionally when running the benchmarks:
-
-1. The hitchhiker-tree sometimes throws an AssertionError with the message "Assert failed: (tree/data-node? (peek path))". An issue has been filed about this in the [hitchhiker-tree project](https://github.com/replikativ/hitchhiker-tree/issues/11). 
-
-   If this error occurs, do not feel discouraged and just try again. In the majority of cases it will not occur.
-
-2. The JRE sometimes crashes with a segmentation fault (SIGSEGV) on linux systems for the LevelDB backend. The problem seems to be related to the bug filed [here](https://issues.apache.org/jira/browse/YARN-5546). 
-   
-   If this error occurs, you can disable this backend by running 
-   
-   ``` bash
-   clj --except-database dh-level
-   ```
-
+- The *hitchhiker* library cannot be measured since queries are not applicable here.
 
 ## Commercial support
 
