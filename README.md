@@ -3,9 +3,9 @@ Commandline tool to run benchmarks and create visualizations for datahike backen
 
 ## Prerequisites
 
-Set up [PostgreSQL](https://www.postgresql.org/) and [Datomic](https://www.datomic.com/) databases using [docker compose](https://docs.docker.com/compose/):
+Set up [PostgreSQL](https://www.postgresql.org/) and [mysql](https://www.mysql.com/) databases using [docker compose](https://docs.docker.com/compose/):
 ``` bash
-docker-compose up postgres mysql datomic
+docker-compose up postgres mysql
 ```
 
 You can clean up the containers with:
@@ -103,7 +103,6 @@ LIB can be one of:
 - datahike 
 - datalevin
 - datascript
-- datomic 
 - hitchhiker
 
 DBNAME can be one of:
@@ -116,9 +115,6 @@ DBNAME can be one of:
  | dh-mysql    | datahike with MySQL and hitchhiker-tree index        |
  | dh-h2       | datahike with H2 in-memory and hitchhiker-tree index |
  | dh-level    | datahike with LevelDB and hitchhiker-tree index      |
- | dat-mem     | datomic in-memory                                    |
- | dat-dev     | datomic dev client                                   |
- | dat-dev-mem | datomic dev client in-memory database                |
  | hht-dat     | hitchhiker-tree directly using raw values            |
  | hht-val     | hitchhiker-tree directly using datoms                |
  | datascript  | datascript                                           |

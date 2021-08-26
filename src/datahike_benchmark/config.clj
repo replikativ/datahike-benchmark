@@ -1,5 +1,4 @@
 (ns datahike-benchmark.config
-  (:require [datomic.client.api :as c])
   (:import (java.util Date)
            (java.text SimpleDateFormat)))
 

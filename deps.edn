@@ -1,5 +1,5 @@
 {:deps {org.clojars.den/datalevin {:mvn/version "0.4.29"}
-        org.clojure/clojure {:mvn/version "1.10.2-alpha1"}
+        org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/data.csv {:mvn/version "1.0.0"}
         io.replikativ/hitchhiker-tree {:mvn/version "0.1.11"}
         io.replikativ/datahike {:mvn/version "0.3.6"}
@@ -7,8 +7,6 @@
         ;io.replikativ/datahike-leveldb {:mvn/version "0.1.0"} ;; outdated
 
         com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}
-        com.datomic/datomic-free {:mvn/version "0.9.5697"}
-        com.datomic/dev-local {:mvn/version "0.9.225"}
 
         com.hypirion/clj-xchart {:mvn/version "0.2.0"}
         criterium/criterium {:mvn/version "0.4.6"}

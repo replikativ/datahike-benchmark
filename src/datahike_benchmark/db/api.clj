@@ -3,7 +3,6 @@
             [datahike-benchmark.db.datahike]
             [datahike-benchmark.db.datalevin]
             [datahike-benchmark.db.datascript]
-            [datahike-benchmark.db.datomic]
             [datahike-benchmark.db.hitchhiker]))
 
 

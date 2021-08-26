@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nohup docker-compose up postgres mysql datomic &
+nohup docker-compose up postgres mysql &
 
 clj -M -e -t -i "2 2 2" -x "0 3 1" -y "0 3 1" -f "connection"
 clj -M -e -t -i "2 2 2" -x "0 3 1" -y "0 3 1" -f "transaction"

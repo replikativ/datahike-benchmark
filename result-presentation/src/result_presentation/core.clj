@@ -10,15 +10,13 @@
 
 (def connection-time-section
   [:div
-   [:p "This benchmark measures the time consumed by datahike's and respectively datomic's 'connect' function."]
-   [:p "The underlying data series could not be retrieved for datomic's in-memory database since it does not allow connecting to existing databases."]
-
+   [:p "This benchmark measures the time consumed by datahike's 'connect' function."]
    [:h4 "Backend Comparison"]
    [:div {:style {:display "flex" :flex-direction "row"}}
     [:vega connection/time-backends-plot]]
    [:p "Here, you can see"]
    [:ul
-    [:li "Time grows linearly with number of datoms in database for datahike (but not for datomic? -> investigate!)"]
+    [:li "Time grows linearly with number of datoms in database for datahike"]
     [:li "Set index is 2 x faster than hitchhiker-tree index"]
     [:li "File backend is 4 x slower than in-memory"]
     [:li "LevelDB backend is 16 x slower than in-memory"]
@@ -45,7 +43,6 @@
     [:li "File backend is 2 x slower than in-memory"]
     [:li "LevelDB backend is 2.5 x slower than in-memory"]
     [:li "Postgres backend is 3 x slower than in-memory"]
-    [:li "Datomic free and in-memory databases show a performance similar to in-memory database with set index"]]
 
    [:h4 "Configuration Comparison for Datoms in Transaction"]
    [:div {:style {:display "flex" :flex-direction "row"}}
@@ -66,7 +63,7 @@
     [:vega transaction/time-configs-db-plot]]
    [:p "Here, you can see"]
    [:ul
-    [:li "Numbers of datoms in database mostly irrelevant for performance"]]])
+    [:li "Numbers of datoms in database mostly irrelevant for performance"]]]])
 
 (def query-time-section
   [:div
@@ -77,8 +74,7 @@
    [:ul
     [:li "Linear growth with number of joins"]
     [:li "Query performance only depends on index used"]
-    [:li "Set index is 3 x faster than hitchhiker-tree index"]
-    [:li "Datomic 4 x slower than datahike databases"]]
+    [:li "Set index is 3 x faster than hitchhiker-tree index"]]
 
    [:h4 "Configuration Comparison"]
    [:div {:style {:display "flex" :flex-direction "row"}}
@@ -92,8 +88,7 @@
     [:vega random-query/time-type-plot]]
    [:p "Here, you can see"]
    [:ul
-    [:li "No significant differences for different data types for datahike databases"]
-    [:li "Slight differences for different data types for datomic databases (constant around 5 ms)"]]
+    [:li "No significant differences for different data types for datahike databases"]]
 
    [:h4 "Attribute Count Comparison"]
    [:div {:style {:display "flex" :flex-direction "row"}}

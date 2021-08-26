@@ -6,7 +6,6 @@
 (defn data [resource]
   (->> (get-data "connection" resource)
        (map #(select-keys % [:datoms :mean :config :backend :sd]))
-       (filter #(not (= (:backend %) "Datomic Free")))
        vec))
 
 (def time-backends-plot
