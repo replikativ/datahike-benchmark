@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=datahike
       - POSTGRES_PASSWORD=clojure
   mysql:
-    image: mysql:8.0
+    image: mysql:8.0.26
     ports:
       - "3306"
     volumes:
@@ -34,6 +34,10 @@ services:
       - plots:/tmp/plots
       - errors:/tmp/errors
       - signals:/tmp/signals
+    environment:
+      - DATAHIKE_NAME=benchmarks
+      - DATAHIKE_STORE_BACKEND=file
+      - DATAHIKE_STORE_PATH=/tmp/output-db/
     links:
       - postgres
       - mysql
@@ -48,6 +52,10 @@ services:
       - db:/tmp/output-db
       - presentation:/tmp/presentation
       - signals:/tmp/signals
+    environment:
+      - DATAHIKE_NAME=benchmarks
+      - DATAHIKE_STORE_BACKEND=file
+      - DATAHIKE_STORE_PATH=/tmp/output-db/
 
 volumes:
   db:

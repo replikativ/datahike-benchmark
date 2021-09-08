@@ -30,7 +30,7 @@
     conn))
 
 (defmethod db/delete :datalevin  [_ {:keys [path]}]
-   (u/delete-files path))
+  (u/delete-files path))
 
 (defmethod db/configs :datalevin [_]
   [{:lib          :datalevin

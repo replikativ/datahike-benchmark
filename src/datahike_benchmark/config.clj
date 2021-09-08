@@ -5,10 +5,12 @@
 
 ;; Maximum value for integer databases
 
+
 (def max-int Integer/MAX_VALUE)
 
 
 ;; Output
+
 
 (def default-plot-dir "./plots")
 (def default-data-dir "./data")
@@ -36,11 +38,13 @@
 
 ;; Benchmark Configurations
 
+
 (def default-schema-flexibility :write)
 (def default-keep-history? false)
 
 
 ;; Resources that can be measured
+
 
 (defn unit [resource]
   (case resource
@@ -50,6 +54,7 @@
 
 
 ;; xchart values
+
 
 (def x-colors [:red :blue :cyan :green :magenta :orange :pink :yellow :black :light-gray :dark-gray :gray])
 (def x-shapes [:square :circle :diamond :triangle-up :triangle-down])

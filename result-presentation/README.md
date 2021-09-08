@@ -6,7 +6,7 @@
 Update file '../docs/index.html' by running:
 
 ``` bash
-lein run ../docs/index.html
+clj -M:run ../docs/index.html
 ```
 
 After integrating the update in the master branch, you can find the results published 
@@ -26,6 +26,6 @@ feature, please let us know.
 
 ## License
 
-Copyright © 2020 Judith Massa
+Copyright © 2020-2021 Judith Massa
 
 Licensed under Eclipse Public License (see [LICENSE](LICENSE)).

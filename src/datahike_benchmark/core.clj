@@ -12,9 +12,9 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(def implemented-libs (set (map name db/libs)))
-(def implemented-dbs (set (map name db/dbs)))
-(def implemented-functions (set (map name b/functions)))
+(def implemented-libs (set (map name (db/libs))))
+(def implemented-dbs (set (map name (db/dbs))))
+(def implemented-functions (set (map name (b/functions))))
 
 ;; Documentation unclear about versions
 ;; :multi not recognized and :update-fn not working even in version 1.0.194 of tools.cli
@@ -27,7 +27,7 @@
    ["-t" "--time-only" "Measure only execution time" :default false]
    ["-c" "--use-criterium" "Use criterium library for time measurements" :default false]
    ["-J" "--use-perf" "Use perf events for space measurements" :default false]
-   ["-u" "--save-to-db URI" "Save results to datahike database with given URI instead of file" :default nil]
+   ["-u" "--save-to-db" "Save results to datahike database as given by environment variables" :default false]
 
    ["-n" "--data-dir DIR" "Data directory" :default c/default-data-dir
     :validate [#(or (not (.exists (io/file %)))
@@ -105,15 +105,15 @@
 
    ["-h" "--help"]])
 
-(defn save [measurements subject resource {:keys [not-save-data data-dir save-to-db not-save-plots plot-dir] :as options}]
+(defn save [measurements subject resource {:keys [not-save-data data-dir save-to-db not-save-plots plot-dir] :as _options}]
   (when (not not-save-data)
     (print (str " Save " (name subject) " data..."))
-    (if (nil? save-to-db)
+    (if save-to-db
+      (u/write-to-db measurements subject resource)
       (do
         (when-not (.exists (io/file data-dir))
           (.mkdir (io/file data-dir)))
-        (u/write-as-csv measurements (c/data-filename data-dir subject resource)))
-      (u/write-to-db measurements subject resource save-to-db))
+        (u/write-as-csv measurements (c/data-filename data-dir subject resource))))
     (print " saved\n"))
 
   (when (not not-save-plots)
@@ -133,12 +133,12 @@
   (let [{:keys [options errors summary]} (cli/parse-opts args cli-options)]
     (if (some? errors)
       (do (println "Errors:" errors)
-          (println (str "Usage: lein run [options] \n\n  Options:\n" summary)))
+          (println (str "Usage: clj -M:run [options] \n\n  Options:\n" summary)))
       (if (:help options)
-        (println (str "Usage: lein run [options] \n\n  Options:\n" summary))
+        (println (str "Usage: clj -M:run [options] \n\n  Options:\n" summary))
         (let [libs-used (parse-multi (:only-lib options) (:except-lib options) implemented-libs)
               dbs-used (parse-multi (:only-database options) (:except-database options) implemented-dbs)
-              databases (->> c/db-configurations
+              databases (->> (db/configurations)
                              (filter #(contains? libs-used (:lib %)))
                              (filter #(contains? dbs-used (:db %))))
               ext-options (assoc options
@@ -159,8 +159,8 @@
                      (when (not (:time-only options))
                        (-> (b/bench function :space (:space-method ext-options) ext-options)
                            (save function :space options))))))
-          (println "Benchmarking has finished successfully")))))
-  (shutdown-agents))
+          (println "Benchmarking has finished successfully")
+          (System/exit 0)))))) ;; Should be (shutdown-agents) , but this is not enough to terminate the service
 
 
 (comment
@@ -169,6 +169,5 @@
   (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "connection")
   (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "transaction")
   (-main "-e" "-t" "-i" "2 2 2" "-x" "0 3 1" "-y" "0 3 1" "-f" "random-query")
-  
-  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25")
-  )
+
+  (-main "-e" "-t" "-i" "2 2 2" "-x" "0 101 25" "-y" "0 101 25"))

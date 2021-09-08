@@ -131,7 +131,7 @@
                   (catch Exception e (if (clojure.string/includes? (.getMessage e) "No stack counts found")
                                        (println "Warning:" (.getMessage e))
                                        (throw e))))
-        
+
         data (if (nil? file)
                []
                (mapv #(clojure.string/split % #" ")
@@ -147,7 +147,7 @@
         args (one-time-setup-fn)
         data (profile-space space-step iterations fn-to-measure args)
         relevant-data (filter (fn [line] (map (fn [lib] clojure.string/includes? (first line) (name lib))
-                                              db/libs))
+                                              (db/libs)))
                               data)
         sample-counts (remove nil?
                               (map #(try (->> (filter (fn [x] (> (count x) 0)) %)

@@ -54,7 +54,7 @@
        (apply concat)))
 
 (defn dbs []
-  (set (map :db configurations)))
+  (set (map :db (configurations))))
 
 (defn config [db]
   (first (filter #(= db (:db %)) (configurations))))

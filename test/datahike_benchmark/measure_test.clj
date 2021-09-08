@@ -23,7 +23,7 @@
       (let [{:keys [mean]} (time (m/measure :time :simple {} t-iterations :transaction (:lib config) fn-args))]
         (println "Mean time measured:" mean (c/unit :time))
         (is (> mean 0))))
-    
+
     (testing "Time measurement with criterium library"
       (let [{mean :mean} (time (m/measure :time :criterium {} t-iterations :transaction (:lib config) fn-args))]
         (println "Mean time measured:" mean (c/unit :time))
@@ -35,6 +35,6 @@
         (is (> mean 0))))
 
     (testing "Space measurement with async-profiler"
-        (let [{:keys [mean]} (time (m/measure :space :perf {:space-step 1} 10 :transaction (:lib config) fn-args))]
-          (println "Mean space measured:" mean (c/unit :space))
-          (is (> mean 0))))))
+      (let [{:keys [mean]} (time (m/measure :space :perf {:space-step 1} 10 :transaction (:lib config) fn-args))]
+        (println "Mean space measured:" mean (c/unit :space))
+        (is (> mean 0))))))

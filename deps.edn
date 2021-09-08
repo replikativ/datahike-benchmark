@@ -2,7 +2,7 @@
         org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/data.csv {:mvn/version "1.0.0"}
         io.replikativ/hitchhiker-tree {:mvn/version "0.1.11"}
-        io.replikativ/datahike {:mvn/version "0.3.6"}
+        io.replikativ/datahike {:mvn/version "0.3.7-SNAPSHOT"}
         io.replikativ/datahike-jdbc {:mvn/version "0.1.2-SNAPSHOT"} ;; currently only working for h2 databases
         ;io.replikativ/datahike-leveldb {:mvn/version "0.1.0"} ;; outdated
 
@@ -13,7 +13,7 @@
         datascript/datascript {:mvn/version "1.2.5"}
         org.clojure/tools.cli {:mvn/version "1.0.194"}}
 
- :paths ["src" "target/classes"]
+ :paths ["src"]
 
  :aliases {:run {:main-opts ["-m" "datahike-benchmark.core"]
                  :jvm-opts ["-Xmx2g"                                       ;; max 2GB Heap size, default usually 1GB
@@ -41,6 +41,13 @@
                                nrepl/nrepl {:mvn/version "0.5.3"}
                                org.clojure/tools.namespace {:mvn/version "0.2.11"}}
                   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+
+           :build {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.297"}}
+                   :exec-fn hf.depstar/uberjar
+                   :exec-args {:main-class datahike-benchmark.core
+                               :exec-fn hf.depstar/uberjar
+                               :jar datahike-benchmark.jar
+                               :aot true}}
 
            :format {:extra-deps {cljfmt/cljfmt {:mvn/version "0.7.0"}}
                     :main-opts ["-m" "cljfmt.main" "check"]}

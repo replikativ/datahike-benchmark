@@ -1,6 +1,7 @@
 (ns result-presentation.data
   (:require [clojure.string :as s]
             [datahike.api :as d]
+            [datahike.config :as c]
             [clojure.java.io :as io]))
 
 
@@ -46,13 +47,14 @@
        (mapv add-label-and-config-type)))
 
 (defn get-data [function resource]
-  (let [query '[:find  ?e ?a ?v
+  (let [config (c/load-config)
+        _ (println "Load from database with configuration:" config)
+        query '[:find  ?e ?a ?v
                 :in $ ?function ?resource
                 :where [?e ?a ?v]
                 [?e :resource ?resource]
-                      [?e :function ?function]]
-        conn (d/connect "datahike:file:///tmp/output-db")
-        ]
+                [?e :function ?function]]
+        conn (d/connect config)]
     (->> (d/q query @conn function resource)
          (group-by first)
          (vals)

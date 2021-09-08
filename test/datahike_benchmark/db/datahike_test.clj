@@ -50,23 +50,23 @@
 
   (testing "JDBC backend (:jdbc)"
     #_(testing "Postgres database"
-      (let [config (dh-config :dh-psql)
-            _ (db/init :datahike config)
-            _ (is (d/database-exists? (:dh-config config)))
-            conn (db/connect :datahike config)
-            _ (is (not (nil? conn)))]
-        (db/release :datahike conn)
-        (db/delete :datahike config)
-        (is (not (d/database-exists? (:dh-config config))))))
+        (let [config (dh-config :dh-psql)
+              _ (db/init :datahike config)
+              _ (is (d/database-exists? (:dh-config config)))
+              conn (db/connect :datahike config)
+              _ (is (not (nil? conn)))]
+          (db/release :datahike conn)
+          (db/delete :datahike config)
+          (is (not (d/database-exists? (:dh-config config))))))
     #_(testing "Mysql database"
-      (let [config (dh-config :dh-mysql)
-            _ (db/init :datahike config)
-            _ (is (d/database-exists? (:dh-config config)))
-            conn (db/connect :datahike config)
-            _ (is (not (nil? conn)))]
-        (db/release :datahike conn)
-        (db/delete :datahike config)
-        (is (not (d/database-exists? (:dh-config config))))))
+        (let [config (dh-config :dh-mysql)
+              _ (db/init :datahike config)
+              _ (is (d/database-exists? (:dh-config config)))
+              conn (db/connect :datahike config)
+              _ (is (not (nil? conn)))]
+          (db/release :datahike conn)
+          (db/delete :datahike config)
+          (is (not (d/database-exists? (:dh-config config))))))
     (testing "H2 database"
       (let [config (dh-config :dh-h2)
             _ (db/init :datahike config)

@@ -1,7 +1,8 @@
 (ns datahike-benchmark.util
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
-            [datahike.api :as d]))
+            [datahike.api :as d]
+            [datahike.config :as c]))
 
 (defn order-row-values [header vals]
   (mapv #(get vals %) header))
@@ -72,15 +73,20 @@
     :db/cardinality :db.cardinality/one
     :db/valueType   :db.type/float}])
 
-(defn write-to-db [data function resource uri]
-  (println "Write to db: " uri function resource)
-  (if (not (d/database-exists? uri))
-    (do (d/create-database uri)
-        (d/transact (d/connect uri) schema)
-        (println "Database created: " uri))
-    (println "Output database exists: " uri))
-  (let [tx (mapv #(assoc % :function (name function)
+(defn write-to-db [data function resource]
+  (println "Write to database:" function resource)
+  (let [config (c/load-config)]
+    (println " Using configuration" config)
+    (if (not (d/database-exists? config))
+      (do (d/create-database config)
+          (d/transact (d/connect config) schema)
+          (println "Database created: " config))
+      (println "Output database exists: " config))
+    (let [tx (mapv #(assoc %
+                           :function (name function)
                            :resource (name resource))
-                 data)
-        conn (d/connect uri)]
-    (d/transact conn tx)))
+                   data)
+          conn (d/connect config)]
+      (d/transact conn tx)
+      (d/release conn)
+      (d/connect config))))

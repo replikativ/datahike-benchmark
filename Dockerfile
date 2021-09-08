@@ -1,18 +1,15 @@
+FROM    clojure:openjdk-11-tools-deps-1.10.3.943-buster
 
-FROM    clojure:lein
-# Uses openjdk 11.0.6 and openjdk runtime environment 18.9
-
+ENV     TAOENSSO_TIMBRE_MIN_LEVEL_EDN=':warn'
 RUN     mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY    project.clj /usr/src/app/
-RUN     lein deps
 COPY    . /usr/src/app
-RUN     mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
+RUN     clj -X:build
 
 CMD rm "/tmp/signals/benchmarks-finished" \
     && echo "Signal file for finished benchmark creation deleted!"; \
     echo "Starting benchmarking at $(date)"; \
-    TIMBRE_LEVEL=':fatal' java -jar app-standalone.jar -e -u "datahike:file:///tmp/output-db" -p "/tmp/plots" -m "/tmp/errors" -i "2 2 2" -x "0 101 25" -y "0 101 25" -f "connection" \
+    java -jar datahike-benchmark.jar -e -u -t -p "/tmp/plots" -m "/tmp/errors" -i "2 2 2" -x "0 101 25" -y "0 11 5" -f "connection" \
     && touch "/tmp/signals/benchmarks-finished" \
     && echo "Signal for finished benchmark creation sent" \
     && echo "Finished benchmarking at $(date)";
